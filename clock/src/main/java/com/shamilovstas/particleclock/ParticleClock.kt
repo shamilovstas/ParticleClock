@@ -60,7 +60,7 @@ class ParticleClock @JvmOverloads constructor(
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val width = resolveSize(MIN_SIZE, widthMeasureSpec)
         val height = resolveSize(MIN_SIZE, heightMeasureSpec)
-        val size = width.coerceAtLeast(height)
+        val size = width.coerceAtMost(height)
         setMeasuredDimension(size, size)
     }
 
