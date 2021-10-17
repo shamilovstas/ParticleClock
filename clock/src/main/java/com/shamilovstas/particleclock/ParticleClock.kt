@@ -1,13 +1,19 @@
 package com.shamilovstas.particleclock
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import androidx.core.graphics.toRect
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.temporal.ChronoField
+import java.time.temporal.TemporalField
 import kotlin.math.min
 
 class ParticleClock @JvmOverloads constructor(
@@ -25,7 +31,7 @@ class ParticleClock @JvmOverloads constructor(
 
     val minutePaint = Paint().apply {
         this.color = Color.BLUE
-        this.strokeWidth = 6.0f
+        this.strokeWidth = 4.0f
         this.style = Paint.Style.STROKE
     }
 
@@ -41,10 +47,13 @@ class ParticleClock @JvmOverloads constructor(
         style = Paint.Style.STROKE
         strokeCap = Paint.Cap.ROUND
     }
+
     // endregion
     // region Objects
+    var currentAngle = -1f
     var clockCircle = Circle()
     var innerCircle = Circle()
+    val analogClock = AnalogClockGeometry(clockCircle)
 
     object TemporaryHolders {
         fun refresh() {
@@ -79,7 +88,7 @@ class ParticleClock @JvmOverloads constructor(
             clockCircle.getPoint(degree.toFloat(), point)
             val isHour = isSectorStart(minute)
 
-            val radius = if (isHour) 10 else 6
+            val radius = if (isHour) 20 else 10
             val paint = if (isHour) hourPaint else minutePaint
             val indicator = TemporaryHolders.circle
             indicator.center = point
@@ -93,7 +102,11 @@ class ParticleClock @JvmOverloads constructor(
         innerCircle.center = clockCircle.center
         innerCircle.radius = clockCircle.radius - INNER_CIRCLE_MARGIN
         innerCircle.draw(canvas, secondsTrackPaint)
-        canvas.drawArc(innerCircle.boundingRectF, 0f, 6f, false, secondsIndicatorPaint)
+
+        if (currentAngle > 0) {
+            val angle = currentAngle - SECONDS_INDICATOR_SWEEP_ANGLE / 2f
+            canvas.drawArc(innerCircle.boundingRectF, angle, SECONDS_INDICATOR_SWEEP_ANGLE, false, secondsIndicatorPaint)
+        }
         TemporaryHolders.refresh()
         // endregion
     }
@@ -102,11 +115,37 @@ class ParticleClock @JvmOverloads constructor(
         return minute % SECTOR_SIZE == 0
     }
 
+    fun setTime(localDate: LocalTime) {
+        val seconds = localDate.get(ChronoField.SECOND_OF_MINUTE)
+        runSecondsTrackAnimation(seconds)
+    }
+
+    private fun runSecondsTrackAnimation(seconds: Int) {
+        val angle = analogClock.minuteToAngle(seconds).toFloat()
+        if (currentAngle > 0) {
+            animateFloat(currentAngle to angle) {
+                addUpdateListener {
+                    currentAngle = it.animatedValue as Float
+                    invalidate()
+                }
+            }.start()
+        }
+        currentAngle = angle
+    }
+
     companion object {
         const val MIN_SIZE = 1000
         const val MINUTES_IN_HOUR = 60
         const val SECTOR_SIZE = 5
         const val DEGREE_PER_SEGMENT = 360 / 60
         const val INNER_CIRCLE_MARGIN = 100
+        const val SECONDS_INDICATOR_SWEEP_ANGLE = 4f
     }
+
+}
+
+fun animateFloat(pair: Pair<Float, Float>, block: ValueAnimator.() -> Unit): ValueAnimator {
+    val animator = ValueAnimator.ofFloat(pair.first, pair.second)
+    block(animator)
+    return animator
 }
