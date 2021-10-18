@@ -17,7 +17,7 @@ data class Circle(
     private val rectF = RectF()
 
     val boundingRect: Rect get() {
-        rectF.roundOut(rect)
+        boundingRectF.roundOut(rect)
         return rect
     }
 

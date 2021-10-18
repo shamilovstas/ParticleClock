@@ -1,7 +1,6 @@
 package com.shamilovstas.particleclock
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
+import org.junit.Assert.*
 import org.junit.Test
 
 class AnalogClockGeometryTest {
@@ -71,6 +70,6 @@ class AnalogClockGeometryTest {
 
     @Test
     fun `should return false when minute is not at start of a sector`() {
-        assertTrue(analogClock.isSectorStart(Minute(13)))
+        assertFalse(analogClock.isSectorStart(Minute(13)))
     }
 }
