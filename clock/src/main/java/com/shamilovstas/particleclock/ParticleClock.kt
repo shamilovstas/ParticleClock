@@ -1,7 +1,7 @@
 package com.shamilovstas.particleclock
 
+import android.animation.Animator
 import android.animation.ValueAnimator
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
@@ -46,7 +46,7 @@ class ParticleClock @JvmOverloads constructor(
 
     // endregion
     // region Objects
-    var currentAngle = -1f
+    var currentAngle = Float.NaN
     var clockCircle = Circle()
     var innerCircle = Circle()
     val analogClock = AnalogClockGeometry()
@@ -119,22 +119,28 @@ class ParticleClock @JvmOverloads constructor(
         innerCircle.radius = radius
         innerCircle.draw(canvas, secondsTrackPaint)
 
-        if (currentAngle > 0) {
+        if (currentAngle.isNaN().not()) {
             val angle = currentAngle - indicatorAngle / 2f
             canvas.drawArc(innerCircle.boundingRectF, angle, indicatorAngle, false, secondsIndicatorPaint)
         }
     }
+
     private fun runSecondsTrackAnimation(seconds: Int) {
-        val angle = analogClock.secondsToAngle(Second(seconds)).toFloat()
-        if (currentAngle > 0) {
+        var angle = analogClock.secondsToAngle(Second(seconds)).toFloat()
+        if (currentAngle.isNaN()) {
+            currentAngle = angle
+        } else {
+            val isNewLap = angle < currentAngle
+            if (isNewLap) angle += 360
             animateFloat(currentAngle to angle) {
                 addUpdateListener {
-                    currentAngle = it.animatedValue as Float
+                    val value = it.animatedValue as Float
+                    currentAngle = value
                     invalidate()
                 }
+                addListener(animationAdapter(onEnd = { if (isNewLap) currentAngle = 360 - currentAngle }))
             }.start()
         }
-        currentAngle = angle
     }
 
     companion object {
@@ -153,4 +159,29 @@ fun animateFloat(pair: Pair<Float, Float>, block: ValueAnimator.() -> Unit): Val
     val animator = ValueAnimator.ofFloat(pair.first, pair.second)
     block(animator)
     return animator
+}
+
+fun animationAdapter(
+    onStart: (Animator) -> Unit = {},
+    onEnd: (Animator) -> Unit = {},
+    onCancel: (Animator) -> Unit = {},
+    onRepeat: (Animator) -> Unit = {},
+): Animator.AnimatorListener {
+    return object : Animator.AnimatorListener {
+        override fun onAnimationStart(animation: Animator?) {
+            onStart(animation!!)
+        }
+
+        override fun onAnimationEnd(animation: Animator?) {
+            onEnd(animation!!)
+        }
+
+        override fun onAnimationCancel(animation: Animator?) {
+            onCancel(animation!!)
+        }
+
+        override fun onAnimationRepeat(animation: Animator?) {
+            onRepeat(animation!!)
+        }
+    }
 }
