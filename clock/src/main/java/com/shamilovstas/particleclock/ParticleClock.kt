@@ -58,7 +58,6 @@ class ParticleClock @JvmOverloads constructor(
     var hoursHandAngle = Float.NaN
 
     var clockCircle = Circle()
-    var innerCircle = Circle()
     val analogClockGeometry = AnalogClockGeometry()
 
     object TemporaryHolders {
@@ -100,7 +99,9 @@ class ParticleClock @JvmOverloads constructor(
         TemporaryHolders.refresh()
 
         drawDebugMinuteHand(canvas)
+        TemporaryHolders.refresh()
         drawDebugHourHand(canvas)
+        TemporaryHolders.refresh()
         // endregion
     }
 
@@ -109,7 +110,7 @@ class ParticleClock @JvmOverloads constructor(
             val center = clockCircle.center
             val circle = TemporaryHolders.circle.apply {
                 radius = 400
-                this.center = clockCircle.center
+                this.center.copyFrom(clockCircle.center)
             }
             circle.getPoint(hoursHandAngle, TemporaryHolders.point)
             val end = TemporaryHolders.point
@@ -146,22 +147,21 @@ class ParticleClock @JvmOverloads constructor(
             val radius = if (isHour) 20 else 10
             val paint = if (isHour) hourPaint else minutePaint
             val indicator = TemporaryHolders.circle
-            indicator.center = point
+            indicator.center.copyFrom(point)
             indicator.radius = radius
             indicator.draw(canvas, paint)
         }
-
-        TemporaryHolders.refresh()
     }
 
     private fun drawSecondsTrack(canvas: Canvas, radius: Int, indicatorAngle: Float) {
-        innerCircle.center = clockCircle.center
-        innerCircle.radius = radius
-        innerCircle.draw(canvas, secondsTrackPaint)
+        val circle = TemporaryHolders.circle
+        circle.center.copyFrom(clockCircle.center)
+        circle.radius = radius
+        circle.draw(canvas, secondsTrackPaint)
 
         if (secondsHandAngle.isNaN().not()) {
             val angle = secondsHandAngle - indicatorAngle / 2f
-            canvas.drawArc(innerCircle.boundingRectF, angle, indicatorAngle, false, secondsIndicatorPaint)
+            canvas.drawArc(circle.boundingRectF, angle, indicatorAngle, false, secondsIndicatorPaint)
         }
     }
 

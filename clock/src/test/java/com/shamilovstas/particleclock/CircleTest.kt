@@ -22,7 +22,7 @@ class CircleTest {
     fun `should return rightmost point when requested at 0 degrees`() {
         val radius = 100
         val center = Point(100, 100)
-        circle.center = center
+        circle.center.copyFrom(center)
         circle.radius = radius
         val expected = Point(radius + center.x, center.y)
         val actual = Point().apply {
@@ -41,5 +41,13 @@ class CircleTest {
         assertEquals(circle.center.x, 0)
         assertEquals(circle.center.y, 0)
         assertEquals(circle.radius, 0)
+    }
+
+    @Test
+    fun `should set circle center when copied from another instance`() {
+        val expected = Point(100, 200)
+        val actual = Point()
+        actual.copyFrom(expected)
+        assertEquals(expected, actual)
     }
 }

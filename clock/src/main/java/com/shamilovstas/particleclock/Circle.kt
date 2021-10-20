@@ -9,7 +9,7 @@ import kotlin.math.sin
 
 
 data class Circle(
-    var center: Point = Point(),
+    val center: Point = Point(),
     var radius: Int = 0
 ) : Refreshable {
 
