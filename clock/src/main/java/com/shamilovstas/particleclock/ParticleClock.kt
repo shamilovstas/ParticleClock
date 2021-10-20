@@ -44,12 +44,22 @@ class ParticleClock @JvmOverloads constructor(
         strokeCap = Paint.Cap.ROUND
     }
 
+    val handPaint = Paint().apply {
+        this.color = Color.BLUE
+        strokeWidth = 12f
+        style = Paint.Style.STROKE
+        strokeCap = Paint.Cap.ROUND
+    }
+
     // endregion
     // region Objects
-    var currentAngle = Float.NaN
+    var secondsHandAngle = Float.NaN
+    var minutesHandAngle = Float.NaN
+    var hoursHandAngle = Float.NaN
+
     var clockCircle = Circle()
     var innerCircle = Circle()
-    val analogClock = AnalogClockGeometry()
+    val analogClockGeometry = AnalogClockGeometry()
 
     object TemporaryHolders {
         fun refresh() {
@@ -88,12 +98,42 @@ class ParticleClock @JvmOverloads constructor(
         TemporaryHolders.refresh()
         drawSecondsTrack(canvas, INNER_SECONDS_TRACK_MARGIN, INNER_SECONDS_INDICATOR_SWEEP_ANGLE)
         TemporaryHolders.refresh()
+
+        drawDebugMinuteHand(canvas)
+        drawDebugHourHand(canvas)
         // endregion
     }
 
+    private fun drawDebugHourHand(canvas: Canvas) {
+        if (!hoursHandAngle.isNaN()) {
+            val center = clockCircle.center
+            val circle = TemporaryHolders.circle.apply {
+                radius = 400
+                this.center = clockCircle.center
+            }
+            circle.getPoint(hoursHandAngle, TemporaryHolders.point)
+            val end = TemporaryHolders.point
+            canvas.drawLine(center.x.toFloat(), center.y.toFloat(), end.x.toFloat(), end.y.toFloat(), hourPaint)
+        }
+    }
+
+    private fun drawDebugMinuteHand(canvas: Canvas) {
+        if (!minutesHandAngle.isNaN()) {
+            val center = clockCircle.center
+            clockCircle.getPoint(minutesHandAngle, TemporaryHolders.point)
+            val end = TemporaryHolders.point
+            canvas.drawLine(center.x.toFloat(), center.y.toFloat(), end.x.toFloat(), end.y.toFloat(), minutePaint)
+        }
+    }
+
     fun setTime(localDate: LocalTime) {
+        val hours = localDate.get(ChronoField.HOUR_OF_AMPM)
         val seconds = localDate.get(ChronoField.SECOND_OF_MINUTE)
+        val minutes = localDate.get(ChronoField.MINUTE_OF_HOUR)
         runSecondsTrackAnimation(seconds)
+        setMinuteHandAngle(minutes, seconds)
+        setHourHandAngle(hours, minutes, seconds)
+        invalidate()
     }
 
     private fun drawMinutesIndicators(canvas: Canvas) {
@@ -101,7 +141,7 @@ class ParticleClock @JvmOverloads constructor(
             val degree = minute * DEGREE_PER_SEGMENT
             val point = TemporaryHolders.point
             clockCircle.getPoint(degree.toFloat(), point)
-            val isHour = analogClock.isSectorStart(Minute(minute))
+            val isHour = analogClockGeometry.isSectorStart(Minute(minute))
 
             val radius = if (isHour) 20 else 10
             val paint = if (isHour) hourPaint else minutePaint
@@ -119,28 +159,36 @@ class ParticleClock @JvmOverloads constructor(
         innerCircle.radius = radius
         innerCircle.draw(canvas, secondsTrackPaint)
 
-        if (currentAngle.isNaN().not()) {
-            val angle = currentAngle - indicatorAngle / 2f
+        if (secondsHandAngle.isNaN().not()) {
+            val angle = secondsHandAngle - indicatorAngle / 2f
             canvas.drawArc(innerCircle.boundingRectF, angle, indicatorAngle, false, secondsIndicatorPaint)
         }
     }
 
     private fun runSecondsTrackAnimation(seconds: Int) {
-        var angle = analogClock.secondsToAngle(Second(seconds)).toFloat()
-        if (currentAngle.isNaN()) {
-            currentAngle = angle
+        var angle = analogClockGeometry.secondsToAngle(Second(seconds))
+        if (secondsHandAngle.isNaN()) {
+            secondsHandAngle = angle
         } else {
-            val isNewLap = angle < currentAngle
+            val isNewLap = angle < secondsHandAngle
             if (isNewLap) angle += 360
-            animateFloat(currentAngle to angle) {
+            animateFloat(secondsHandAngle to angle) {
                 addUpdateListener {
                     val value = it.animatedValue as Float
-                    currentAngle = value
+                    secondsHandAngle = value
                     invalidate()
                 }
-                addListener(animationAdapter(onEnd = { if (isNewLap) currentAngle = 360 - currentAngle }))
+                addListener(animationAdapter(onEnd = { if (isNewLap) secondsHandAngle = 360 - secondsHandAngle }))
             }.start()
         }
+    }
+
+    private fun setHourHandAngle(hour: Int, minute: Int, seconds: Int) {
+        hoursHandAngle = analogClockGeometry.hourToAngle(Hour(hour), Minute(minute), Second(seconds))
+    }
+
+    private fun setMinuteHandAngle(minute: Int, seconds: Int) {
+        minutesHandAngle = analogClockGeometry.minuteToAngle(Minute(minute), Second(seconds))
     }
 
     companion object {

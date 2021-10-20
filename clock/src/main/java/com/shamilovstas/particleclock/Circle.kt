@@ -29,7 +29,6 @@ data class Circle(
             bottom = (center.y + radius).toFloat()
         }
 
-
     var x: Int
         set(value) {
             center.x = value
@@ -44,7 +43,7 @@ data class Circle(
 
     fun getPoint(angle: Float, point: Point) {
         val pointX = center.x + radius * cos(angle.toRadian())
-        val pointY = center.y - radius * sin(angle.toRadian())
+        val pointY = center.y + radius * sin(angle.toRadian())
         point.x = pointX.toInt()
         point.y = pointY.toInt()
     }
