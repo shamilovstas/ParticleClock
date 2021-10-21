@@ -203,33 +203,3 @@ class ParticleClock @JvmOverloads constructor(
 
 }
 
-fun animateFloat(pair: Pair<Float, Float>, block: ValueAnimator.() -> Unit): ValueAnimator {
-    val animator = ValueAnimator.ofFloat(pair.first, pair.second)
-    block(animator)
-    return animator
-}
-
-fun animationAdapter(
-    onStart: (Animator) -> Unit = {},
-    onEnd: (Animator) -> Unit = {},
-    onCancel: (Animator) -> Unit = {},
-    onRepeat: (Animator) -> Unit = {},
-): Animator.AnimatorListener {
-    return object : Animator.AnimatorListener {
-        override fun onAnimationStart(animation: Animator?) {
-            onStart(animation!!)
-        }
-
-        override fun onAnimationEnd(animation: Animator?) {
-            onEnd(animation!!)
-        }
-
-        override fun onAnimationCancel(animation: Animator?) {
-            onCancel(animation!!)
-        }
-
-        override fun onAnimationRepeat(animation: Animator?) {
-            onRepeat(animation!!)
-        }
-    }
-}
