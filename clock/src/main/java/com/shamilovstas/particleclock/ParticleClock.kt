@@ -44,13 +44,6 @@ class ParticleClock @JvmOverloads constructor(
         strokeCap = Paint.Cap.ROUND
     }
 
-    val handPaint = Paint().apply {
-        this.color = Color.BLUE
-        strokeWidth = 12f
-        style = Paint.Style.STROKE
-        strokeCap = Paint.Cap.ROUND
-    }
-
     // endregion
     // region Objects
     var secondsHandAngle = Float.NaN
