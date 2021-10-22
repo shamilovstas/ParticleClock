@@ -14,3 +14,13 @@ data class Point(
         y = 0
     }
 }
+
+interface CartesianPoint {
+    val x: Int
+    val y: Int
+}
+
+interface PolarPoint {
+    val angle: Float
+    val radius: Int
+}
