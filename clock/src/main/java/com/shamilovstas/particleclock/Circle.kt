@@ -59,3 +59,4 @@ fun Circle.draw(canvas: Canvas, paint: Paint) {
 }
 
 fun Number.toRadian() = Math.toRadians(this.toDouble())
+fun Number.toDegrees() = Math.toDegrees(this.toDouble())

@@ -15,4 +15,22 @@ class PointTest {
         assertEquals(point.x, 0)
         assertEquals(point.y, 0)
     }
+
+    @Test
+    fun `should convert cartesian point when converted from polar`() {
+        val expected = CartesianPoint(-5, 0)
+        val polar = PolarPoint(180f, 5)
+        val actual = polar.toCartesian()
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `should convert polar point when converted from cartesian`() {
+        val expected = PolarPoint(180f, 5)
+        val cartesian: CartesianCoordinate = CartesianPoint(-5, 0)
+        val actual = cartesian.toPolar()
+
+        assertEquals(expected, actual)
+    }
 }
