@@ -20,14 +20,30 @@ data class Point(
 
 
 class CartesianPoint(
-    override val x: Int, override val y: Int
-) : CartesianCoordinate {
+    override var x: Float = 0f, override var y: Float = 0f
+) : CartesianCoordinate, Refreshable {
 
     override fun toPolar(): PolarCoordinate {
+        return PolarPoint().also {
+            toPolar(it)
+        }
+    }
+
+    override fun toPolar(obj: PolarCoordinate) {
         val angle = atan2(y.toDouble(), x.toDouble()).toDegrees()
         val radius = sqrt(x.toDouble().pow(2) + y.toDouble().pow(2))
+        obj.angle = angle.toFloat()
+        obj.radius = radius.toFloat()
+    }
 
-        return PolarPoint(angle.toFloat(), radius.toInt())
+
+    override fun refresh() {
+        x = 0f
+        y = 0f
+    }
+
+    override fun toString(): String {
+        return "CartesianPoint(x=$x, y=$y)"
     }
 
     override fun equals(other: Any?): Boolean {
@@ -43,23 +59,35 @@ class CartesianPoint(
     }
 
     override fun hashCode(): Int {
-        var result = x
-        result = 31 * result + y
+        var result = x.hashCode()
+        result = 31 * result + y.hashCode()
         return result
-    }
-
-    override fun toString(): String {
-        return "CartesianPoint(x=$x, y=$y)"
     }
 }
 
 class PolarPoint(
-    override val angle: Float, override val radius: Int
-) : PolarCoordinate {
+    override var angle: Float = 0f, override var radius: Float = 0f
+) : PolarCoordinate, Refreshable {
     override fun toCartesian(): CartesianCoordinate {
+        return CartesianPoint().also {
+            toCartesian(it)
+        }
+    }
+
+    override fun toCartesian(obj: CartesianCoordinate) {
         val x = radius * cos(angle.toRadian())
         val y = radius * sin(angle.toRadian())
-        return CartesianPoint(x.toInt(), y.toInt())
+        obj.x = x.toFloat()
+        obj.y = y.toFloat()
+    }
+
+    override fun refresh() {
+        angle = 0f
+        radius = 0f
+    }
+
+    override fun toString(): String {
+        return "PolarPoint(angle=$angle, radius=$radius)"
     }
 
     override fun equals(other: Any?): Boolean {
@@ -76,26 +104,24 @@ class PolarPoint(
 
     override fun hashCode(): Int {
         var result = angle.hashCode()
-        result = 31 * result + radius
+        result = 31 * result + radius.hashCode()
         return result
-    }
-
-    override fun toString(): String {
-        return "PolarPoint(angle=$angle, radius=$radius)"
     }
 }
 
 
 interface CartesianCoordinate {
-    val x: Int
-    val y: Int
+    var x: Float
+    var y: Float
 
     fun toPolar(): PolarCoordinate
+    fun toPolar(obj: PolarCoordinate)
 }
 
 interface PolarCoordinate {
-    val angle: Float
-    val radius: Int
+    var angle: Float
+    var radius: Float
 
     fun toCartesian(): CartesianCoordinate
+    fun toCartesian(obj: CartesianCoordinate)
 }
