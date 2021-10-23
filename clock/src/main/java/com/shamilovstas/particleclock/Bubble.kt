@@ -4,16 +4,20 @@ import android.graphics.Canvas
 import android.graphics.Paint
 
 class Bubble(
-    val circle: Circle = Circle(),
-    val style: Style
-)
+    val point: PolarPoint,
+    val style: Style,
+    val radius: Float
+) {
 
-fun Bubble.draw(canvas: Canvas, paint: Paint) {
-    paint.style = when (style) {
-        Style.FILL -> Paint.Style.FILL
-        Style.STROKE -> Paint.Style.STROKE
+    private val __preallocatedCartesian = CartesianPoint()
+
+    fun draw(canvas: Canvas, paint: Paint, center: CartesianPoint) {
+        paint.style = when (style) {
+            Style.FILL -> Paint.Style.FILL
+            Style.STROKE -> Paint.Style.STROKE
+        }
+        point.drawCircle(center, canvas, paint, radius, __preallocatedCartesian)
     }
-    circle.draw(canvas, paint)
 }
 
 enum class Style {

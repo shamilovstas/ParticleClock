@@ -8,11 +8,12 @@ fun Circle.draw(canvas: Canvas, paint: Paint) {
 }
 
 fun PolarCoordinate.drawCircle(
+    center: CartesianPoint,
     canvas: Canvas,
     paint: Paint,
     radius: Float,
     holder: CartesianPoint = CartesianPoint()
 ) {
     this.toCartesian(holder)
-    canvas.drawCircle(holder.x, holder.y, radius, paint)
+    canvas.drawCircle(holder.x + center.x, holder.y + center.y, radius, paint)
 }

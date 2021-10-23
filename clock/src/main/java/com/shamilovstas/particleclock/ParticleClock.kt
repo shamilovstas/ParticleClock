@@ -8,9 +8,7 @@ import android.util.AttributeSet
 import android.view.View
 import java.time.LocalTime
 import java.time.temporal.ChronoField
-import kotlin.math.cos
 import kotlin.math.min
-import kotlin.math.sin
 import kotlin.random.Random
 
 class ParticleClock @JvmOverloads constructor(
@@ -88,16 +86,12 @@ class ParticleClock @JvmOverloads constructor(
         bubbles.clear()
         repeat(1000) {
             val style = if (Random.nextBoolean()) Style.FILL else Style.STROKE
-            val radius = Random.nextInt(4, 14).toFloat()
-
-
+            val bubbleRadius = Random.nextInt(4, 14).toFloat()
             val randomRadius = Random.nextFloat(INNER_SECONDS_TRACK_MARGIN, clockCircle.radius - OUTER_SECONDS_TRACK_MARGIN)
             val randomAngle = Random.nextFloat() * 360f
 
-            val x = randomRadius * cos(randomAngle.toRadian())
-            val y = randomRadius * sin(randomAngle.toRadian())
-            val point = CartesianPoint(x.toInt() + clockCircle.center.x, y.toInt() + clockCircle.center.y)
-            val bubble = Bubble(style = style, circle = Circle(point, radius))
+            val point = PolarPoint(randomAngle, randomRadius)
+            val bubble = Bubble(style = style, point = point, radius = bubbleRadius)
 
             bubbles.add(bubble)
         }
@@ -126,9 +120,7 @@ class ParticleClock @JvmOverloads constructor(
         TemporaryHolders.refresh()
         // endregion
 
-        bubbles.forEach { it.draw(canvas, bubblePaint) }
-
-
+        bubbles.forEach { it.draw(canvas, bubblePaint, clockCircle.center) }
     }
 
     private fun drawDebugHourHand(canvas: Canvas) {
