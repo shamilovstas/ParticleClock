@@ -11,11 +11,13 @@ import kotlin.math.sin
 
 data class Circle(
     val center: CartesianPoint = CartesianPoint(),
-    var radius: Int = 0
+    var radius: Float = 0f
 ) : Refreshable {
 
     private val rect = Rect()
     private val rectF = RectF()
+
+    private val _preallocatedPolarPoint = PolarPoint() // such efficient
 
     val boundingRect: Rect get() {
         boundingRectF.roundOut(rect)
@@ -43,20 +45,21 @@ data class Circle(
         get() = center.y.roundToInt()
 
     fun getPoint(angle: Float, point: CartesianPoint) {
-        val pointX = center.x + radius * cos(angle.toRadian())
-        val pointY = center.y + radius * sin(angle.toRadian())
-        point.x = pointX.toFloat()
-        point.y = pointY.toFloat()
+        _preallocatedPolarPoint.radius = radius
+        _preallocatedPolarPoint.angle = angle
+        _preallocatedPolarPoint.toCartesian(point)
+        point.x += center.x
+        point.y += center.y
     }
 
     override fun refresh() {
         center.refresh()
-        radius = 0
+        radius = 0f
     }
 }
 
 fun Circle.draw(canvas: Canvas, paint: Paint) {
-    canvas.drawCircle(center.x, center.y, radius.toFloat(), paint)
+    canvas.drawCircle(center.x, center.y, radius, paint)
 }
 
 fun Number.toRadian() = Math.toRadians(this.toDouble())

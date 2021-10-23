@@ -20,7 +20,7 @@ class CircleTest {
 
     @Test
     fun `should return rightmost point when requested at 0 degrees`() {
-        val radius = 100
+        val radius = 100f
         val center = CartesianPoint(100, 100)
         circle.center.copyFrom(center)
         circle.radius = radius
@@ -33,13 +33,13 @@ class CircleTest {
 
     @Test
     fun `should set fields to 0 when refresh is called`() {
-        circle.radius = 25
+        circle.radius = 25f
         circle.center.x = 52f
         circle.center.y = 512f
 
         circle.refresh()
         assertEquals(circle.x, 0)
         assertEquals(circle.y, 0)
-        assertEquals(circle.radius, 0)
+        assertEquals(circle.radius, 0f)
     }
 }

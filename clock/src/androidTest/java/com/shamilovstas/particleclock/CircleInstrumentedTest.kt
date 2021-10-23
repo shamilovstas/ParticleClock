@@ -17,7 +17,7 @@ class CircleInstrumentedTest {
 
     @Test
     fun shouldReturnCorrectBoundingRectWhenCenterAndRadiusAreSet() {
-        val radius = 100
+        val radius = 100f
         val center = CartesianPoint(100, 500)
         val expected = RectF().apply {
             left = center.x - radius
