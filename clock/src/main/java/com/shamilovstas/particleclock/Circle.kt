@@ -58,9 +58,5 @@ data class Circle(
     }
 }
 
-fun Circle.draw(canvas: Canvas, paint: Paint) {
-    canvas.drawCircle(center.x, center.y, radius, paint)
-}
-
 fun Number.toRadian() = Math.toRadians(this.toDouble())
 fun Number.toDegrees() = Math.toDegrees(this.toDouble())
