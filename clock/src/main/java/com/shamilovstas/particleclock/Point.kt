@@ -2,26 +2,12 @@ package com.shamilovstas.particleclock
 
 import kotlin.math.*
 
-data class Point(
-    var x: Int = 0,
-    var y: Int = 0
-) : Refreshable {
-
-    fun copyFrom(other: Point) {
-        x = other.x
-        y = other.y
-    }
-
-    override fun refresh() {
-        x = 0
-        y = 0
-    }
-}
-
 
 class CartesianPoint(
     override var x: Float = 0f, override var y: Float = 0f
 ) : CartesianCoordinate, Refreshable {
+
+    constructor(x: Int, y: Int): this(x.toFloat(), y.toFloat())
 
     override fun toPolar(): PolarCoordinate {
         return PolarPoint().also {
@@ -36,6 +22,10 @@ class CartesianPoint(
         obj.radius = radius.toFloat()
     }
 
+    override fun copyFrom(other: CartesianCoordinate) {
+        this.x = other.x
+        this.y = other.y
+    }
 
     override fun refresh() {
         x = 0f
@@ -81,6 +71,11 @@ class PolarPoint(
         obj.y = y.toFloat()
     }
 
+    override fun copyFrom(other: PolarCoordinate) {
+        this.angle = other.angle
+        this.radius = other.radius
+    }
+
     override fun refresh() {
         angle = 0f
         radius = 0f
@@ -114,6 +109,7 @@ interface CartesianCoordinate {
     var x: Float
     var y: Float
 
+    fun copyFrom(other: CartesianCoordinate)
     fun toPolar(): PolarCoordinate
     fun toPolar(obj: PolarCoordinate)
 }
@@ -122,6 +118,7 @@ interface PolarCoordinate {
     var angle: Float
     var radius: Float
 
+    fun copyFrom(other: PolarCoordinate)
     fun toCartesian(): CartesianCoordinate
     fun toCartesian(obj: CartesianCoordinate)
 }

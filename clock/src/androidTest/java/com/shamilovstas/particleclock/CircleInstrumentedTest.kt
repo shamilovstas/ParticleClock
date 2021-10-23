@@ -1,13 +1,10 @@
 package com.shamilovstas.particleclock
 
-import android.graphics.Rect
-import androidx.test.platform.app.InstrumentationRegistry
+import android.graphics.RectF
 import androidx.test.ext.junit.runners.AndroidJUnit4
-
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
-
-import org.junit.Assert.*
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -21,8 +18,8 @@ class CircleInstrumentedTest {
     @Test
     fun shouldReturnCorrectBoundingRectWhenCenterAndRadiusAreSet() {
         val radius = 100
-        val center = Point(100, 500)
-        val expected = Rect().apply {
+        val center = CartesianPoint(100, 500)
+        val expected = RectF().apply {
             left = center.x - radius
             right = center.x + radius
             top = center.y - radius
@@ -31,6 +28,6 @@ class CircleInstrumentedTest {
         circle.center.copyFrom(center)
         circle.radius = radius
 
-        assertEquals(expected, circle.boundingRect)
+        assertEquals(expected, circle.boundingRectF)
     }
 }

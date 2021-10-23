@@ -64,4 +64,20 @@ class PointTest {
         assertEquals(expected.x, actual.x, angleDelta)
         assertEquals(expected.y, actual.y, angleDelta)
     }
+
+    @Test
+    fun `should init cartesian when copied from another instance`() {
+        val expected = CartesianPoint(100, 200)
+        val actual = CartesianPoint()
+        actual.copyFrom(expected)
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `should init polar when copied from another instance`() {
+        val expected = PolarPoint(180f, 5f)
+        val actual = PolarPoint()
+        actual.copyFrom(expected)
+        assertEquals(expected, actual)
+    }
 }

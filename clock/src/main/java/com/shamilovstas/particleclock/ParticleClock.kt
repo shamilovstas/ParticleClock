@@ -70,7 +70,7 @@ class ParticleClock @JvmOverloads constructor(
         }
 
         var circle = Circle()
-        var point = Point()
+        var point = CartesianPoint()
     }
     // endregion
 
@@ -85,7 +85,7 @@ class ParticleClock @JvmOverloads constructor(
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         val cx = w / 2
         val cy = h / 2
-        clockCircle = Circle(Point(cx, cy), min(cx, cy) - 40)
+        clockCircle = Circle(CartesianPoint(cx, cy), min(cx, cy) - 40)
         bubbles.clear()
         repeat(1000) {
             val style = if (Random.nextBoolean()) Style.FILL else Style.STROKE
@@ -96,7 +96,7 @@ class ParticleClock @JvmOverloads constructor(
 
             val x = randomRadius * cos(randomAngle.toRadian())
             val y = randomRadius * sin(randomAngle.toRadian())
-            val point = Point(x.toInt() + clockCircle.center.x, y.toInt() + clockCircle.center.y)
+            val point = CartesianPoint(x.toInt() + clockCircle.center.x, y.toInt() + clockCircle.center.y)
             val bubble = Bubble(style = style, circle = Circle(point, radius))
 
             bubbles.add(bubble)
@@ -141,10 +141,10 @@ class ParticleClock @JvmOverloads constructor(
             circle.getPoint(hoursHandAngle, TemporaryHolders.point)
             val end = TemporaryHolders.point
             canvas.drawLine(
-                center.x.toFloat(),
-                center.y.toFloat(),
-                end.x.toFloat(),
-                end.y.toFloat(),
+                center.x,
+                center.y,
+                end.x,
+                end.y,
                 hourPaint
             )
         }

@@ -5,11 +5,12 @@ import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.RectF
 import kotlin.math.cos
+import kotlin.math.roundToInt
 import kotlin.math.sin
 
 
 data class Circle(
-    val center: Point = Point(),
+    val center: CartesianPoint = CartesianPoint(),
     var radius: Int = 0
 ) : Refreshable {
 
@@ -23,29 +24,29 @@ data class Circle(
 
     val boundingRectF: RectF
         get() = rectF.apply {
-            left = (center.x - radius).toFloat()
-            right = (center.x + radius).toFloat()
-            top = (center.y - radius).toFloat()
-            bottom = (center.y + radius).toFloat()
+            left = center.x - radius
+            right = center.x + radius
+            top = center.y - radius
+            bottom = center.y + radius
         }
 
     var x: Int
         set(value) {
-            center.x = value
+            center.x = value.toFloat()
         }
-        get() = center.x
+        get() = center.x.roundToInt()
 
     var y: Int
         set(value) {
-            center.y = value
+            center.y = value.toFloat()
         }
-        get() = center.y
+        get() = center.y.roundToInt()
 
-    fun getPoint(angle: Float, point: Point) {
+    fun getPoint(angle: Float, point: CartesianPoint) {
         val pointX = center.x + radius * cos(angle.toRadian())
         val pointY = center.y + radius * sin(angle.toRadian())
-        point.x = pointX.toInt()
-        point.y = pointY.toInt()
+        point.x = pointX.toFloat()
+        point.y = pointY.toFloat()
     }
 
     override fun refresh() {
@@ -55,7 +56,7 @@ data class Circle(
 }
 
 fun Circle.draw(canvas: Canvas, paint: Paint) {
-    canvas.drawCircle(center.x.toFloat(), center.y.toFloat(), radius.toFloat(), paint)
+    canvas.drawCircle(center.x, center.y, radius.toFloat(), paint)
 }
 
 fun Number.toRadian() = Math.toRadians(this.toDouble())

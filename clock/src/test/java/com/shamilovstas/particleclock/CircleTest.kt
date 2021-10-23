@@ -14,18 +14,18 @@ class CircleTest {
         val expectedY = 82
         circle.x = expectedX
         circle.y = expectedY
-        assertEquals(circle.center.x, expectedX)
-        assertEquals(circle.center.y, expectedY)
+        assertEquals(circle.x, expectedX)
+        assertEquals(circle.y, expectedY)
     }
 
     @Test
     fun `should return rightmost point when requested at 0 degrees`() {
         val radius = 100
-        val center = Point(100, 100)
+        val center = CartesianPoint(100, 100)
         circle.center.copyFrom(center)
         circle.radius = radius
-        val expected = Point(radius + center.x, center.y)
-        val actual = Point().apply {
+        val expected = CartesianPoint(radius + center.x, center.y)
+        val actual = CartesianPoint().apply {
             circle.getPoint(0f, this)
         }
         assertEquals(expected, actual)
@@ -34,20 +34,12 @@ class CircleTest {
     @Test
     fun `should set fields to 0 when refresh is called`() {
         circle.radius = 25
-        circle.center.x = 52
-        circle.center.y = 512
+        circle.center.x = 52f
+        circle.center.y = 512f
 
         circle.refresh()
-        assertEquals(circle.center.x, 0)
-        assertEquals(circle.center.y, 0)
+        assertEquals(circle.x, 0)
+        assertEquals(circle.y, 0)
         assertEquals(circle.radius, 0)
-    }
-
-    @Test
-    fun `should set circle center when copied from another instance`() {
-        val expected = Point(100, 200)
-        val actual = Point()
-        actual.copyFrom(expected)
-        assertEquals(expected, actual)
     }
 }
