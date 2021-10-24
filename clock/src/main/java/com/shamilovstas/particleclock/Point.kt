@@ -17,9 +17,9 @@ class CartesianPoint(
 
     override fun toPolar(obj: PolarCoordinate) {
         val angle = atan2(y.toDouble(), x.toDouble()).toDegrees()
-        val radius = sqrt(x.toDouble().pow(2) + y.toDouble().pow(2))
+        val radius = hypot(x, y)
         obj.angle = angle.toFloat()
-        obj.radius = radius.toFloat()
+        obj.radius = radius
     }
 
     override fun copyFrom(other: CartesianCoordinate) {

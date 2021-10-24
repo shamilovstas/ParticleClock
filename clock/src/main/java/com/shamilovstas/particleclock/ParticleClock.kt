@@ -91,7 +91,7 @@ class ParticleClock @JvmOverloads constructor(
         val cy = h / 2
         clockCircle = Circle(CartesianPoint(cx, cy), min(cx, cy) - 40f)
         bubbles.clear()
-        repeat(500) {
+        repeat(1000) {
             val style = if (Random.nextBoolean()) Style.FILL else Style.STROKE
             val bubbleRadius = Random.nextInt(4, 14).toFloat()
             val randomRadius = Random.nextFloat(
