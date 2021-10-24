@@ -166,10 +166,11 @@ class ParticleClock @JvmOverloads constructor(
     }
 
     override fun onDraw(canvas: Canvas) {
+        canvas.translate(clockCircle.x.toFloat(), clockCircle.y.toFloat())
         val radius = clockCircle.radius
         // region 1. Drawing outer clock contour (minutes and hours indicators)
         drawMinutesIndicators(canvas)
-        ParticleClock.TemporaryHolders.refresh()
+        TemporaryHolders.refresh()
         // endregion
         // region 2. Drawing the seconds track (may be referred as the 'inner circle')
         drawSecondsTrack(
@@ -177,9 +178,9 @@ class ParticleClock @JvmOverloads constructor(
             radius - OUTER_SECONDS_TRACK_MARGIN,
             OUTER_SECONDS_INDICATOR_SWEEP_ANGLE
         )
-        ParticleClock.TemporaryHolders.refresh()
+        TemporaryHolders.refresh()
         drawSecondsTrack(canvas, INNER_SECONDS_TRACK_MARGIN, INNER_SECONDS_INDICATOR_SWEEP_ANGLE)
-        ParticleClock.TemporaryHolders.refresh()
+        TemporaryHolders.refresh()
 
         drawDebugMinuteHand(canvas)
         TemporaryHolders.refresh()
@@ -187,12 +188,11 @@ class ParticleClock @JvmOverloads constructor(
         TemporaryHolders.refresh()
         // endregion
 
-        bubbles.forEach { it.draw(canvas, bubblePaint, clockCircle.center) }
+        bubbles.forEach { it.draw(canvas, bubblePaint) }
     }
 
     private fun drawDebugHourHand(canvas: Canvas) {
         if (!hoursHandAngle.isNaN()) {
-            val center = clockCircle.center
             val circle = TemporaryHolders.circle.apply {
                 radius = 400f
                 this.center.copyFrom(clockCircle.center)
@@ -200,8 +200,7 @@ class ParticleClock @JvmOverloads constructor(
             circle.getPoint(hoursHandAngle, TemporaryHolders.cartesianPoint)
             val end = TemporaryHolders.cartesianPoint
             canvas.drawLine(
-                center.x,
-                center.y,
+                0f, 0f,
                 end.x,
                 end.y,
                 hourPaint
@@ -211,13 +210,11 @@ class ParticleClock @JvmOverloads constructor(
 
     private fun drawDebugMinuteHand(canvas: Canvas) {
         if (!minutesHandAngle.isNaN()) {
-            val center = clockCircle.center
 
             clockCircle.getPoint(minutesHandAngle, TemporaryHolders.cartesianPoint)
             val end = TemporaryHolders.cartesianPoint
             canvas.drawLine(
-                center.x,
-                center.y,
+                0f, 0f,
                 end.x,
                 end.y,
                 minutePaint
@@ -253,7 +250,6 @@ class ParticleClock @JvmOverloads constructor(
 
     private fun drawSecondsTrack(canvas: Canvas, radius: Float, indicatorAngle: Float) {
         val circle = TemporaryHolders.circle
-        circle.center.copyFrom(clockCircle.center)
         circle.radius = radius
         circle.draw(canvas, secondsTrackPaint)
 

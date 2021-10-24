@@ -48,8 +48,6 @@ data class Circle(
         _preallocatedPolarPoint.radius = radius
         _preallocatedPolarPoint.angle = angle
         _preallocatedPolarPoint.toCartesian(point)
-        point.x += center.x
-        point.y += center.y
     }
 
     override fun refresh() {

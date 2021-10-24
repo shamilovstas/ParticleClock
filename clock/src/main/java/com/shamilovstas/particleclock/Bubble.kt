@@ -12,12 +12,12 @@ class Bubble(
 
     private val __preallocatedCartesian = CartesianPoint()
 
-    fun draw(canvas: Canvas, paint: Paint, center: CartesianPoint) {
+    fun draw(canvas: Canvas, paint: Paint) {
         paint.style = when (style) {
             Style.FILL -> Paint.Style.FILL
             Style.STROKE -> Paint.Style.STROKE
         }
-        point.drawCircle(center, canvas, paint, radius, __preallocatedCartesian)
+        point.drawCircle(canvas, paint, radius, __preallocatedCartesian)
     }
 }
 
