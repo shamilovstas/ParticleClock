@@ -6,7 +6,8 @@ import android.graphics.Paint
 class Bubble(
     val point: PolarPoint,
     val style: Style,
-    val radius: Float
+    val radius: Float,
+    val autoMove: Boolean
 ) {
 
     private val __preallocatedCartesian = CartesianPoint()
