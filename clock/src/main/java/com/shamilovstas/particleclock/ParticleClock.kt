@@ -1,14 +1,22 @@
 package com.shamilovstas.particleclock
 
+import android.animation.Animator
+import android.animation.AnimatorSet
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.LinearInterpolator
+import android.widget.Button
 import java.time.LocalTime
 import java.time.temporal.ChronoField
 import kotlin.math.min
+import kotlin.properties.Delegates
 import kotlin.random.Random
 
 class ParticleClock @JvmOverloads constructor(
@@ -17,6 +25,7 @@ class ParticleClock @JvmOverloads constructor(
     defStyleAttr: Int = 0,
     defStyleRes: Int = 0
 ) : View(context, attributeSet, defStyleAttr, defStyleRes) {
+
     // region Paints
     val hourPaint = Paint().apply {
         this.color = Color.BLUE
@@ -55,6 +64,7 @@ class ParticleClock @JvmOverloads constructor(
     var hoursHandAngle = Float.NaN
 
     var clockCircle = Circle()
+
     val analogClockGeometry = AnalogClockGeometry()
     val bubbles = mutableListOf<Bubble>()
 
@@ -84,7 +94,7 @@ class ParticleClock @JvmOverloads constructor(
         val cy = h / 2
         clockCircle = Circle(CartesianPoint(cx, cy), min(cx, cy) - 40f)
         bubbles.clear()
-        repeat(1000) {
+        repeat(10) {
             val style = if (Random.nextBoolean()) Style.FILL else Style.STROKE
             val bubbleRadius = Random.nextInt(4, 14).toFloat()
             val randomRadius = Random.nextFloat(INNER_SECONDS_TRACK_MARGIN, clockCircle.radius - OUTER_SECONDS_TRACK_MARGIN)
@@ -97,6 +107,35 @@ class ParticleClock @JvmOverloads constructor(
         }
     }
     // endregion
+
+    private fun pulse(): Animator {
+
+        val maxRadius = clockCircle.radius - OUTER_SECONDS_TRACK_MARGIN
+        val animator = ValueAnimator.ofInt(0, 100)
+        animator.interpolator = AccelerateDecelerateInterpolator()
+        var previous = 0
+        animator.addUpdateListener {
+            val animatedValue = it.animatedValue as Int
+            val value = animatedValue - previous
+            previous = animatedValue
+            for (bubble in bubbles) {
+                val point = bubble.point
+                val radius = point.radius
+                var newRadius = radius + value
+
+                if (newRadius > maxRadius) {
+                    newRadius = INNER_SECONDS_TRACK_MARGIN
+                }
+                point.radius = newRadius
+            }
+            invalidate()
+        }
+        animator.duration = 1000
+        animator.addListener(animationAdapter(
+            onRepeat = { previous = 0}
+        ))
+        return animator
+    }
 
     override fun onDraw(canvas: Canvas) {
         val radius = clockCircle.radius
@@ -209,7 +248,7 @@ class ParticleClock @JvmOverloads constructor(
         } else {
             val isNewLap = angle < secondsHandAngle
             if (isNewLap) angle += 360
-            animateFloat(secondsHandAngle to angle) {
+            val secondsAnimation = animateFloat(secondsHandAngle to angle) {
                 addUpdateListener {
                     val value = it.animatedValue as Float
                     secondsHandAngle = value
@@ -218,7 +257,10 @@ class ParticleClock @JvmOverloads constructor(
                 addListener(animationAdapter(onEnd = {
                     if (isNewLap) secondsHandAngle = 360 - secondsHandAngle
                 }))
-            }.start()
+            }
+            val animator = AnimatorSet()
+            animator.playTogether(secondsAnimation, pulse())
+            animator.start()
         }
     }
 
