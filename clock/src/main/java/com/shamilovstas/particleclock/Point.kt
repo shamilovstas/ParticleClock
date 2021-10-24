@@ -55,9 +55,21 @@ class CartesianPoint(
     }
 }
 
-class PolarPoint(
-    override var angle: Float = 0f, override var radius: Float = 0f
+class PolarPoint( // TODO precalculate cos and sin
+    override var radius: Float = 0f
 ) : PolarCoordinate, Refreshable {
+
+    override var angle: Float = 0f
+        set(value) {
+            field = value
+            val pi = field.toRadian()
+            angleCos = cos(pi)
+            angleSin = sin(pi)
+        }
+
+
+    private var angleCos: Double = 1.0
+    private var angleSin: Double = 0.0
     override fun toCartesian(): CartesianCoordinate {
         return CartesianPoint().also {
             toCartesian(it)
@@ -65,8 +77,8 @@ class PolarPoint(
     }
 
     override fun toCartesian(obj: CartesianCoordinate) {
-        val x = radius * cos(angle.toRadian())
-        val y = radius * sin(angle.toRadian())
+        val x = radius * angleCos
+        val y = radius * angleSin
         obj.x = x.toFloat()
         obj.y = y.toFloat()
     }

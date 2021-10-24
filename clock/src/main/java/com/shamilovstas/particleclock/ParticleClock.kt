@@ -102,7 +102,9 @@ class ParticleClock @JvmOverloads constructor(
 
             val autoMove = Random.nextInt(0, 6) % 5 == 0
 
-            val point = PolarPoint(randomAngle, randomRadius)
+            val point = PolarPoint(randomRadius)
+
+            point.angle = randomAngle
             val bubble = Bubble(style = style, point = point, radius = bubbleRadius, autoMove = autoMove)
 
             bubbles.add(bubble)
