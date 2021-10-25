@@ -6,7 +6,7 @@ import android.graphics.Paint
 class Bubble(
     val point: PolarPoint,
     val style: Style,
-    val radius: Float,
+    var radius: Float,
     val autoMove: Boolean
 ) {
 

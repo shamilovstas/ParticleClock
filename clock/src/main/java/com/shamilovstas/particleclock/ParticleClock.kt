@@ -120,45 +120,18 @@ class ParticleClock @JvmOverloads constructor(
         linearAnimator.interpolator = LinearInterpolator()
         pulseAnimator.interpolator = AccelerateDecelerateInterpolator()
 
-        pulseAnimator.addUpdateListener(object : ValueAnimator.AnimatorUpdateListener {
-            var previous = 0
-            override fun onAnimationUpdate(animation: ValueAnimator) {
-                val animatedValue = animation.animatedValue as Int
-                val value = animatedValue - previous
-                previous = animatedValue
-                for (bubble in particlesHolder.bubbles) {
-                    val point = bubble.point
-                    val radius = point.radius
-                    var newRadius = radius + value
-
-                    if (newRadius > maxRadius) {
-                        newRadius = INNER_SECONDS_TRACK_MARGIN
-                    }
-                    point.radius = newRadius
-                }
-                invalidate()
-            }
-        })
-        linearAnimator.addUpdateListener(object : ValueAnimator.AnimatorUpdateListener {
-            var previous = 0
-            override fun onAnimationUpdate(animation: ValueAnimator) {
-                val animatedValue = animation.animatedValue as Int
-                val value = animatedValue - previous
-                previous = animatedValue
-                for (bubble in particlesHolder.bubbles) {
-                    if (bubble.autoMove.not()) continue
-                    val point = bubble.point
-                    val radius = point.radius
-                    var newRadius = radius + value
-
-                    if (newRadius > maxRadius) {
-                        newRadius = INNER_SECONDS_TRACK_MARGIN
-                    }
-                    point.radius = newRadius
-                }
-                invalidate()
-            }
-        })
+        pulseAnimator.addUpdateListener(
+            createParticlesMovementUpdater(
+                maxRadius,
+                MovementType.PULSE
+            )
+        )
+        linearAnimator.addUpdateListener(
+            createParticlesMovementUpdater(
+                maxRadius,
+                MovementType.LINEAR
+            )
+        )
         val animatorSet = AnimatorSet()
         animatorSet.playTogether(linearAnimator, pulseAnimator)
         return animatorSet
@@ -308,6 +281,39 @@ class ParticleClock @JvmOverloads constructor(
 
     override fun surfaceDestroyed(holder: SurfaceHolder) {
         drawingThread.interrupt()
+    }
+
+    private fun createParticlesMovementUpdater(
+        maxRadius: Float,
+        kind: MovementType
+    ): ValueAnimator.AnimatorUpdateListener {
+        return object : ValueAnimator.AnimatorUpdateListener {
+            var previous = 0
+            override fun onAnimationUpdate(animation: ValueAnimator) {
+                val animatedValue = animation.animatedValue as Int
+                val value = animatedValue - previous
+                previous = animatedValue
+                for (bubble in particlesHolder.bubbles) {
+
+                    if (kind == MovementType.LINEAR && bubble.autoMove) {
+                        continue
+                    }
+                    val point = bubble.point
+                    val radius = point.radius
+                    var newRadius = radius + value
+
+                    if (newRadius > maxRadius) {
+                        newRadius = INNER_SECONDS_TRACK_MARGIN
+                    }
+                    point.radius = newRadius
+                }
+                invalidate()
+            }
+        }
+    }
+
+    enum class MovementType {
+        PULSE, LINEAR
     }
 
     companion object {
