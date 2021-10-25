@@ -27,6 +27,7 @@ class ParticleClock @JvmOverloads constructor(
 ) : SurfaceView(context, attributeSet, defStyleAttr, defStyleRes), SurfaceHolder.Callback {
 
     private var drawingThread by Delegates.notNull<DrawingThread>()
+    private val particlesHolder = ParticlesHolder()
 
     init {
         holder.addCallback(this)
@@ -74,7 +75,6 @@ class ParticleClock @JvmOverloads constructor(
     var clockCircle = Circle()
 
     val analogClockGeometry = AnalogClockGeometry()
-    val bubbles = mutableListOf<Bubble>()
 
     object TemporaryHolders {
         fun refresh() {
@@ -101,26 +101,7 @@ class ParticleClock @JvmOverloads constructor(
         val cx = w / 2
         val cy = h / 2
         clockCircle = Circle(CartesianPoint(cx, cy), min(cx, cy) - 40f)
-        bubbles.clear()
-        repeat(1000) {
-            val style = if (Random.nextBoolean()) Style.FILL else Style.STROKE
-            val bubbleRadius = Random.nextInt(4, 14).toFloat()
-            val randomRadius = Random.nextFloat(
-                INNER_SECONDS_TRACK_MARGIN,
-                clockCircle.radius - OUTER_SECONDS_TRACK_MARGIN
-            )
-            val randomAngle = Random.nextFloat() * 360f
-
-            val autoMove = Random.nextInt(0, 6) % 5 == 0
-
-            val point = PolarPoint(randomRadius)
-
-            point.angle = randomAngle
-            val bubble =
-                Bubble(style = style, point = point, radius = bubbleRadius, autoMove = autoMove)
-
-            bubbles.add(bubble)
-        }
+        particlesHolder.init(clockCircle.radius)
     }
     // endregion
 
@@ -145,7 +126,7 @@ class ParticleClock @JvmOverloads constructor(
                 val animatedValue = animation.animatedValue as Int
                 val value = animatedValue - previous
                 previous = animatedValue
-                for (bubble in bubbles) {
+                for (bubble in particlesHolder.bubbles) {
                     val point = bubble.point
                     val radius = point.radius
                     var newRadius = radius + value
@@ -164,7 +145,7 @@ class ParticleClock @JvmOverloads constructor(
                 val animatedValue = animation.animatedValue as Int
                 val value = animatedValue - previous
                 previous = animatedValue
-                for (bubble in bubbles) {
+                for (bubble in particlesHolder.bubbles) {
                     if (bubble.autoMove.not()) continue
                     val point = bubble.point
                     val radius = point.radius
@@ -208,7 +189,7 @@ class ParticleClock @JvmOverloads constructor(
         TemporaryHolders.refresh()
         // endregion
 
-        bubbles.forEach { it.draw(canvas, bubblePaint) }
+        particlesHolder.bubbles.forEach { it.draw(canvas, bubblePaint) }
     }
 
     private fun drawDebugHourHand(canvas: Canvas) {
@@ -338,5 +319,4 @@ class ParticleClock @JvmOverloads constructor(
         const val OUTER_SECONDS_INDICATOR_SWEEP_ANGLE = 4f
         const val INNER_SECONDS_INDICATOR_SWEEP_ANGLE = 40f
     }
-
 }
