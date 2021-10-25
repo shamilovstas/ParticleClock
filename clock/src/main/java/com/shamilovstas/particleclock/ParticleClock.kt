@@ -112,7 +112,7 @@ class ParticleClock @JvmOverloads constructor(
     private fun pulse(): Animator {
 
         val maxRadius = clockCircle.radius - OUTER_SECONDS_TRACK_MARGIN
-        val pulseAnimator = ValueAnimator.ofInt(0, 150)
+        val pulseAnimator = ValueAnimator.ofInt(0, 100)
         val linearAnimator = ValueAnimator.ofInt(0, 70)
         linearAnimator.duration = 1000
         pulseAnimator.duration = 1000
@@ -306,6 +306,11 @@ class ParticleClock @JvmOverloads constructor(
                         newRadius = INNER_SECONDS_TRACK_MARGIN
                     }
                     point.radius = newRadius
+
+
+                    val sizeMultiplier =
+                        1.0f - ((newRadius - INNER_SECONDS_TRACK_MARGIN) / maxRadius)
+                    bubble.radius = ParticlesHolder.INITIAL_RADIUS * (sizeMultiplier + 0.5f)
                 }
                 invalidate()
             }

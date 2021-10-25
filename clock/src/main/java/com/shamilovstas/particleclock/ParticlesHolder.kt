@@ -32,6 +32,6 @@ class ParticlesHolder {
 
     companion object {
         const val PARTICLES_COUNT = 1000
-        const val INITIAL_RADIUS = 14f
+        const val INITIAL_RADIUS = 10f
     }
 }
