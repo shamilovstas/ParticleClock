@@ -7,6 +7,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.SurfaceHolder
 import android.view.SurfaceView
@@ -30,6 +31,8 @@ class ParticleClock @JvmOverloads constructor(
     init {
         holder.addCallback(this)
     }
+
+    private var color: Int = Color.WHITE
 
     // region Paints
     val hourPaint = Paint().apply {
@@ -113,12 +116,17 @@ class ParticleClock @JvmOverloads constructor(
             val point = PolarPoint(randomRadius)
 
             point.angle = randomAngle
-            val bubble = Bubble(style = style, point = point, radius = bubbleRadius, autoMove = autoMove)
+            val bubble =
+                Bubble(style = style, point = point, radius = bubbleRadius, autoMove = autoMove)
 
             bubbles.add(bubble)
         }
     }
     // endregion
+
+    override fun setBackgroundColor(color: Int) {
+        this.color = color
+    }
 
     private fun pulse(): Animator {
 
@@ -177,7 +185,7 @@ class ParticleClock @JvmOverloads constructor(
 
     override fun draw(canvas: Canvas) {
         super.draw(canvas)
-        canvas.drawRGB(255, 255, 255);
+        canvas.drawColor(color);
         canvas.translate(clockCircle.x.toFloat(), clockCircle.y.toFloat())
         val radius = clockCircle.radius
         // region 1. Drawing outer clock contour (minutes and hours indicators)
