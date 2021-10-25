@@ -8,12 +8,14 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
-import android.view.View
+import android.view.SurfaceHolder
+import android.view.SurfaceView
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.LinearInterpolator
 import java.time.LocalTime
 import java.time.temporal.ChronoField
 import kotlin.math.min
+import kotlin.properties.Delegates
 import kotlin.random.Random
 
 class ParticleClock @JvmOverloads constructor(
@@ -21,7 +23,13 @@ class ParticleClock @JvmOverloads constructor(
     attributeSet: AttributeSet? = null,
     defStyleAttr: Int = 0,
     defStyleRes: Int = 0
-) : View(context, attributeSet, defStyleAttr, defStyleRes) {
+) : SurfaceView(context, attributeSet, defStyleAttr, defStyleRes), SurfaceHolder.Callback {
+
+    private var drawingThread by Delegates.notNull<DrawingThread>()
+
+    init {
+        holder.addCallback(this)
+    }
 
     // region Paints
     val hourPaint = Paint().apply {
@@ -167,7 +175,9 @@ class ParticleClock @JvmOverloads constructor(
         return animatorSet
     }
 
-    override fun onDraw(canvas: Canvas) {
+    override fun draw(canvas: Canvas) {
+        super.draw(canvas)
+        canvas.drawRGB(255, 255, 255);
         canvas.translate(clockCircle.x.toFloat(), clockCircle.y.toFloat())
         val radius = clockCircle.radius
         // region 1. Drawing outer clock contour (minutes and hours indicators)
@@ -297,6 +307,18 @@ class ParticleClock @JvmOverloads constructor(
 
     private fun setMinuteHandAngle(minute: Int, seconds: Int) {
         minutesHandAngle = analogClockGeometry.minuteToAngle(Minute(minute), Second(seconds))
+    }
+
+    override fun surfaceCreated(holder: SurfaceHolder) {
+        drawingThread = DrawingThread(getHolder(), this)
+        drawingThread.start()
+    }
+
+    override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
+    }
+
+    override fun surfaceDestroyed(holder: SurfaceHolder) {
+        drawingThread.interrupt()
     }
 
     companion object {
