@@ -37,7 +37,7 @@ class ParticlesHolder {
     }
 
     fun getDistancePercent(start: Float, end: Float): Double {
-        require(start < end)
+        require(start <= end)
         return 1.0 - start / end;
     }
 
