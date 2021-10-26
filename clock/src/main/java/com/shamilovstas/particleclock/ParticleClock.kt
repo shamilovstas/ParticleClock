@@ -303,14 +303,15 @@ class ParticleClock @JvmOverloads constructor(
                     var newRadius = radius + value
 
                     if (newRadius > maxRadius) {
-                        newRadius = INNER_SECONDS_TRACK_MARGIN
+                        newRadius = BUBBLE_SPAWN_CENTER_MARGIN
                     }
                     point.radius = newRadius
 
-
-                    val sizeMultiplier =
-                        1.0f - ((newRadius - INNER_SECONDS_TRACK_MARGIN) / maxRadius)
-                    bubble.radius = ParticlesHolder.INITIAL_RADIUS * (sizeMultiplier + 0.5f)
+                    val sizeMultiplier = particlesHolder.getDistancePercent(
+                        newRadius - BUBBLE_SPAWN_CENTER_MARGIN,
+                        maxRadius
+                    )
+                    bubble.setRadiusMultiplier(sizeMultiplier)
                 }
                 invalidate()
             }
@@ -327,6 +328,7 @@ class ParticleClock @JvmOverloads constructor(
         const val DEGREE_PER_SEGMENT = 360 / 60
         const val OUTER_SECONDS_TRACK_MARGIN = 100
         const val INNER_SECONDS_TRACK_MARGIN = 80f
+        const val BUBBLE_SPAWN_CENTER_MARGIN = INNER_SECONDS_TRACK_MARGIN + 24f
         const val OUTER_SECONDS_INDICATOR_SWEEP_ANGLE = 4f
         const val INNER_SECONDS_INDICATOR_SWEEP_ANGLE = 40f
     }

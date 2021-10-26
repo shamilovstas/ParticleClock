@@ -10,6 +10,11 @@ class Bubble(
     val autoMove: Boolean
 ) {
 
+    companion object {
+        const val INITIAL_RADIUS = 10f
+        const val MULTIPLIER_ADJUSTMENT_FACTOR = 0.5f
+    }
+
     private val __preallocatedCartesian = CartesianPoint()
 
     fun draw(canvas: Canvas, paint: Paint) {
@@ -18,6 +23,10 @@ class Bubble(
             Style.STROKE -> Paint.Style.STROKE
         }
         point.drawCircle(canvas, paint, radius, __preallocatedCartesian)
+    }
+
+    fun setRadiusMultiplier(multiplier: Double) {
+        this.radius = INITIAL_RADIUS * (multiplier.toFloat() + MULTIPLIER_ADJUSTMENT_FACTOR)
     }
 }
 
