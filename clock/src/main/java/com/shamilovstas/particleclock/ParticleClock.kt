@@ -333,7 +333,7 @@ class ParticleClock @JvmOverloads constructor(
         const val DEGREE_PER_SEGMENT = 360 / 60
         const val OUTER_SECONDS_TRACK_MARGIN = 50
         const val INNER_SECONDS_TRACK_MARGIN = 80f
-        const val BUBBLE_SPAWN_CENTER_MARGIN = INNER_SECONDS_TRACK_MARGIN + 24f
+        const val BUBBLE_SPAWN_CENTER_MARGIN = INNER_SECONDS_TRACK_MARGIN
         const val OUTER_SECONDS_INDICATOR_SWEEP_ANGLE = 4f
         const val INNER_SECONDS_INDICATOR_SWEEP_ANGLE = 40f
     }
