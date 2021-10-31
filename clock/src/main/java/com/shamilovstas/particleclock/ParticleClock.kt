@@ -109,13 +109,13 @@ class ParticleClock @JvmOverloads constructor(
         this.color = color
     }
 
-    private fun pulse(): Animator {
 
+    private fun pulse(): Animator {
         val maxRadius = clockCircle.radius - OUTER_SECONDS_TRACK_MARGIN
-        val pulseAnimator = ValueAnimator.ofInt(0, 100)
+        val pulseAnimator = ValueAnimator.ofInt(0, 25)
         val linearAnimator = ValueAnimator.ofInt(0, 70)
         linearAnimator.duration = 1000
-        pulseAnimator.duration = 1000
+        pulseAnimator.duration = 300
 
         linearAnimator.interpolator = LinearInterpolator()
         pulseAnimator.interpolator = AccelerateDecelerateInterpolator()
@@ -239,11 +239,16 @@ class ParticleClock @JvmOverloads constructor(
         }
     }
 
+    var isDryRun = false
+    var hasRun = false
     private fun runSecondsTrackAnimation(seconds: Int) {
+
         var angle = analogClockGeometry.secondsToAngle(Second(seconds))
         if (secondsHandAngle.isNaN()) {
             secondsHandAngle = angle
         } else {
+            if (isDryRun && hasRun) return
+            hasRun = true
             val isNewLap = angle < secondsHandAngle
             if (isNewLap) angle += 360
             val secondsAnimation = animateFloat(secondsHandAngle to angle) {
@@ -309,7 +314,7 @@ class ParticleClock @JvmOverloads constructor(
 
                     val sizeMultiplier = particlesHolder.getDistancePercent(
                         newRadius - BUBBLE_SPAWN_CENTER_MARGIN,
-                        maxRadius
+                        maxRadius - BUBBLE_SPAWN_CENTER_MARGIN
                     )
                     bubble.setRadiusMultiplier(sizeMultiplier)
                 }
@@ -326,7 +331,7 @@ class ParticleClock @JvmOverloads constructor(
         const val MIN_SIZE = 1000
         const val MINUTES_IN_HOUR = 60
         const val DEGREE_PER_SEGMENT = 360 / 60
-        const val OUTER_SECONDS_TRACK_MARGIN = 100
+        const val OUTER_SECONDS_TRACK_MARGIN = 50
         const val INNER_SECONDS_TRACK_MARGIN = 80f
         const val BUBBLE_SPAWN_CENTER_MARGIN = INNER_SECONDS_TRACK_MARGIN + 24f
         const val OUTER_SECONDS_INDICATOR_SWEEP_ANGLE = 4f
