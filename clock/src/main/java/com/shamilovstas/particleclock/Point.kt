@@ -55,7 +55,7 @@ class CartesianPoint(
     }
 }
 
-class PolarPoint( // TODO precalculate cos and sin
+class PolarPoint(
     override var radius: Float = 0f
 ) : PolarCoordinate, Refreshable {
 

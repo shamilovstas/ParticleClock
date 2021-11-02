@@ -17,7 +17,8 @@ class PointTest {
 
     @Test
     fun `should clean polar point when refresh is called`() {
-        val point = PolarPoint(180f, 5f)
+        val point = PolarPoint(180f)
+        point.angle = 5f
         point.refresh()
         assertEquals(point.radius, 0f, angleDelta)
         assertEquals(point.angle, 0f, angleDelta)
@@ -26,7 +27,9 @@ class PointTest {
     @Test
     fun `should convert cartesian point when converted from polar`() {
         val expected = CartesianPoint(-5f, 0f)
-        val polar = PolarPoint(180f, 5f)
+        val polar = PolarPoint(180f)
+        polar.angle = 5f
+
         val actual = polar.toCartesian()
 
         assertEquals(expected.x, actual.x, angleDelta)
@@ -35,7 +38,9 @@ class PointTest {
 
     @Test
     fun `should convert polar point when converted from cartesian`() {
-        val expected = PolarPoint(180f, 5f)
+        val expected = PolarPoint(180f)
+        expected.angle = 5f
+
         val cartesian: CartesianCoordinate = CartesianPoint(-5f, 0f)
         val actual = cartesian.toPolar()
 
@@ -45,7 +50,9 @@ class PointTest {
 
     @Test
     fun `should convert polar point when used existing instance`() {
-        val expected = PolarPoint(180f, 5f)
+        val expected = PolarPoint(180f)
+        expected.angle = 5f
+
         val actual = PolarPoint()
         val cartesian = CartesianPoint(-5f, 0f)
         cartesian.toPolar(actual)
@@ -57,7 +64,9 @@ class PointTest {
     @Test
     fun `should convert cartesian point when used existing instance`() {
         val expected = CartesianPoint(-5f, 0f)
-        val polar = PolarPoint(180f, 5f)
+        val polar = PolarPoint(180f)
+        polar.angle = 5f
+
         val actual = CartesianPoint()
         polar.toCartesian(actual)
 
@@ -75,7 +84,9 @@ class PointTest {
 
     @Test
     fun `should init polar when copied from another instance`() {
-        val expected = PolarPoint(180f, 5f)
+        val expected = PolarPoint(180f)
+        expected.angle = 5f
+
         val actual = PolarPoint()
         actual.copyFrom(expected)
         assertEquals(expected, actual)
