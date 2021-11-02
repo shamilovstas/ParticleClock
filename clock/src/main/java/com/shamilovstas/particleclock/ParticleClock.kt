@@ -7,7 +7,6 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.SurfaceHolder
 import android.view.SurfaceView
@@ -16,6 +15,7 @@ import android.view.animation.LinearInterpolator
 import java.time.LocalTime
 import java.time.temporal.ChronoField
 import kotlin.math.min
+import kotlin.math.roundToInt
 import kotlin.properties.Delegates
 import kotlin.random.Random
 
@@ -71,6 +71,9 @@ class ParticleClock @JvmOverloads constructor(
     var secondsHandAngle = Float.NaN
     var minutesHandAngle = Float.NaN
     var hoursHandAngle = Float.NaN
+
+    var possibleAngleRange: List<Int> = listOf()
+
 
     var clockCircle = Circle()
 
@@ -203,6 +206,12 @@ class ParticleClock @JvmOverloads constructor(
         runSecondsTrackAnimation(seconds)
         setMinuteHandAngle(minutes, seconds)
         setHourHandAngle(hours, minutes, seconds)
+
+        val minuteHandAngleRange =
+            ((minutesHandAngle.roundToInt() - 7)..(minutesHandAngle.roundToInt() + 7))
+        val hourHandAngleRange =
+            ((hoursHandAngle.roundToInt() - 7)..(hoursHandAngle.roundToInt() + 7))
+        possibleAngleRange = (0..360) - minuteHandAngleRange - hourHandAngleRange
         invalidate()
     }
 
@@ -309,6 +318,7 @@ class ParticleClock @JvmOverloads constructor(
 
                     if (newRadius > maxRadius) {
                         newRadius = BUBBLE_SPAWN_CENTER_MARGIN
+                        point.angle = possibleAngleRange.random() + Random.nextFloat(-1f, +1f)
                     }
                     point.radius = newRadius
 

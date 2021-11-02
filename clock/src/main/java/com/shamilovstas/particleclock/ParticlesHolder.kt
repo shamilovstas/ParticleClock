@@ -2,7 +2,6 @@ package com.shamilovstas.particleclock
 
 import com.shamilovstas.particleclock.Bubble.Companion.INITIAL_RADIUS
 import com.shamilovstas.particleclock.ParticleClock.Companion.BUBBLE_SPAWN_CENTER_MARGIN
-import kotlin.math.max
 import kotlin.random.Random
 
 class ParticlesHolder {
