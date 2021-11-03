@@ -15,12 +15,6 @@ class Hand(var radius: Float = 0f) {
     private var cartesianPoint = CartesianPoint()
     // endregion
 
-    val minutePaint = Paint().apply {
-        this.color = Color.BLUE
-        this.strokeWidth = 4.0f
-        this.style = Paint.Style.STROKE
-    }
-
     val sector = Sector()
     var angle = Angle()
         set(value) {
@@ -34,7 +28,7 @@ class Hand(var radius: Float = 0f) {
         private val sectorSweepAngle = Angle(10f)
     }
 
-    fun draw(canvas: Canvas) {
+    fun draw(canvas: Canvas, paint: Paint) {
         if (angle.isInitialized()) {
             polarPoint.angle = angle
             polarPoint.radius = radius
@@ -44,7 +38,7 @@ class Hand(var radius: Float = 0f) {
                 0f, 0f,
                 cartesianPoint.x,
                 cartesianPoint.y,
-                minutePaint
+                paint
             )
         }
     }
