@@ -8,7 +8,12 @@ import com.shamilovstas.particleclock.CartesianPoint
 import com.shamilovstas.particleclock.PolarPoint
 import com.shamilovstas.particleclock.Sector
 
-class Hand(var radius: Float = 0f) {
+
+// TODO tests
+class Hand(
+    var radius: Float = 0f,
+    var sweepAngle: Angle = Angle(10f)
+) {
 
     // region preallocated
     private var polarPoint = PolarPoint(radius = radius)
@@ -19,14 +24,10 @@ class Hand(var radius: Float = 0f) {
     var angle = Angle()
         set(value) {
             field = value
-            val sweepHalf = sectorSweepAngle / 2f
+            val sweepHalf = sweepAngle / 2f
             sector.start = value - sweepHalf
-            sector.end = value + sectorSweepAngle - sweepHalf
+            sector.end = value + sweepAngle - sweepHalf
         }
-
-    companion object {
-        private val sectorSweepAngle = Angle(10f)
-    }
 
     fun draw(canvas: Canvas, paint: Paint) {
         if (angle.isInitialized()) {

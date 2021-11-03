@@ -114,7 +114,6 @@ class ParticleClock @JvmOverloads constructor(
         this.color = color
     }
 
-
     private fun pulse(): Animator {
         val maxRadius = radius - OUTER_SECONDS_TRACK_MARGIN
         val pulseAnimator = ValueAnimator.ofInt(0, 25)
@@ -164,21 +163,13 @@ class ParticleClock @JvmOverloads constructor(
         )
         TemporaryHolders.refresh()
 
-        drawDebugMinuteHand(canvas)
+        minutesHand.draw(canvas, minutePaint)
         TemporaryHolders.refresh()
-        drawDebugHourHand(canvas)
+        hoursHand.draw(canvas, hourPaint)
         TemporaryHolders.refresh()
         // endregion
 
         particlesHolder.bubbles.forEach { it.draw(canvas, bubblePaint) }
-    }
-
-    private fun drawDebugHourHand(canvas: Canvas) {
-        hoursHand.draw(canvas, hourPaint)
-    }
-
-    private fun drawDebugMinuteHand(canvas: Canvas) {
-        minutesHand.draw(canvas, minutePaint)
     }
 
     fun setTime(localDate: LocalTime) {
