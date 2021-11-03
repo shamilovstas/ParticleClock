@@ -75,7 +75,7 @@ class ParticleClock @JvmOverloads constructor(
 
     var possibleAngleRange: List<Int> = listOf()
 
-    var clockCircle = Circle()
+    var radius: Float = 0f
     var center: CartesianPoint = CartesianPoint()
 
     val analogClockGeometry = AnalogClockGeometry()
@@ -105,8 +105,8 @@ class ParticleClock @JvmOverloads constructor(
         val cx = w / 2
         val cy = h / 2
         center = CartesianPoint(cx, cy)
-        clockCircle = Circle(radius = min(cx, cy) - 40f)
-        particlesHolder.init(clockCircle.radius)
+        radius = min(cx, cy) - 40f
+        particlesHolder.init(radius)
     }
     // endregion
 
@@ -116,7 +116,7 @@ class ParticleClock @JvmOverloads constructor(
 
 
     private fun pulse(): Animator {
-        val maxRadius = clockCircle.radius - OUTER_SECONDS_TRACK_MARGIN
+        val maxRadius = radius - OUTER_SECONDS_TRACK_MARGIN
         val pulseAnimator = ValueAnimator.ofInt(0, 25)
         val linearAnimator = ValueAnimator.ofInt(0, 70)
         linearAnimator.duration = 1000
@@ -146,7 +146,6 @@ class ParticleClock @JvmOverloads constructor(
         super.draw(canvas)
         canvas.drawColor(color)
         canvas.translate(center.x, center.y)
-        val radius = clockCircle.radius
         // region 1. Drawing outer clock contour (minutes and hours indicators)
         drawMinutesIndicators(canvas)
         TemporaryHolders.refresh()
@@ -199,8 +198,11 @@ class ParticleClock @JvmOverloads constructor(
     private fun drawMinutesIndicators(canvas: Canvas) {
         for (minute in 0 until MINUTES_IN_HOUR) {
             val angle = Angle((minute * DEGREE_PER_SEGMENT).toFloat())
+            TemporaryHolders.polarPoint.also {
+                it.radius = radius
+                it.angle = angle
+            }.run { toCartesian(TemporaryHolders.cartesianPoint) }
             val point = TemporaryHolders.cartesianPoint
-            clockCircle.getPoint(angle, point)
             val isHour = analogClockGeometry.isSectorStart(Minute(minute))
 
             val radius = if (isHour) 20f else 10f
@@ -229,16 +231,12 @@ class ParticleClock @JvmOverloads constructor(
         }
     }
 
-    var isDryRun = false
-    var hasRun = false
     private fun runSecondsTrackAnimation(seconds: Int) {
 
         var angle = analogClockGeometry.secondsToAngle(Second(seconds))
         if (secondsHandAngle.isInitialized().not()) {
             secondsHandAngle = angle
         } else {
-            if (isDryRun && hasRun) return
-            hasRun = true
             val isNewLap = angle < secondsHandAngle
             if (isNewLap) angle += Angle(360f)
             val secondsAnimation = animateFloat(secondsHandAngle.angle to angle.angle) {

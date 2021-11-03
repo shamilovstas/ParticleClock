@@ -1,12 +1,8 @@
 package com.shamilovstas.particleclock
 
-import android.graphics.Canvas
-import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.RectF
-import kotlin.math.cos
 import kotlin.math.roundToInt
-import kotlin.math.sin
 
 
 data class Circle(
@@ -16,8 +12,6 @@ data class Circle(
 
     private val rect = Rect()
     private val rectF = RectF()
-
-    private val _preallocatedPolarPoint = PolarPoint() // such efficient
 
     val boundingRect: Rect get() {
         boundingRectF.roundOut(rect)
@@ -43,14 +37,6 @@ data class Circle(
             center.y = value.toFloat()
         }
         get() = center.y.roundToInt()
-
-    fun getPoint(angle: Angle, point: CartesianPoint) {
-        _preallocatedPolarPoint.radius = radius
-        _preallocatedPolarPoint.angle = angle
-        _preallocatedPolarPoint.toCartesian(point)
-        point.x += center.x
-        point.y += center.y
-    }
 
     override fun refresh() {
         center.refresh()
