@@ -85,9 +85,7 @@ class AngleTest {
 
     @Test
     fun `should be initialized when created with a value`() {
-        val initialized = Angle(49f)
+        val initialized = Angle(51f)
         assertTrue(initialized.isInitialized())
     }
-
-    // 5 - 10 = 355
 }
