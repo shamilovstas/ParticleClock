@@ -12,6 +12,7 @@ import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.LinearInterpolator
+import com.shamilovstas.particleclock.hand.Hand
 import java.time.LocalTime
 import java.time.temporal.ChronoField
 import kotlin.math.abs
@@ -43,12 +44,6 @@ class ParticleClock @JvmOverloads constructor(
         this.style = Paint.Style.FILL
     }
 
-    val minutePaint = Paint().apply {
-        this.color = Color.BLUE
-        this.strokeWidth = 4.0f
-        this.style = Paint.Style.STROKE
-    }
-
     val secondsTrackPaint = Paint().apply {
         this.color = Color.BLUE
         strokeWidth = 2f
@@ -70,7 +65,7 @@ class ParticleClock @JvmOverloads constructor(
     // endregion
     // region Objects
     var secondsHandAngle = Angle()
-    var minutesHandAngle = Angle()
+    var minutesHand = Hand(600f)
     var hoursHandAngle = Angle()
 
     var possibleAngleRange: List<Int> = listOf()
@@ -193,17 +188,7 @@ class ParticleClock @JvmOverloads constructor(
     }
 
     private fun drawDebugMinuteHand(canvas: Canvas) {
-        if (minutesHandAngle.isInitialized()) {
-
-            clockCircle.getPoint(minutesHandAngle, TemporaryHolders.cartesianPoint)
-            val end = TemporaryHolders.cartesianPoint
-            canvas.drawLine(
-                0f, 0f,
-                end.x,
-                end.y,
-                minutePaint
-            )
-        }
+        minutesHand.draw(canvas)
     }
 
     fun setTime(localDate: LocalTime) {
@@ -214,8 +199,7 @@ class ParticleClock @JvmOverloads constructor(
         setMinuteHandAngle(minutes, seconds)
         setHourHandAngle(hours, minutes, seconds)
 
-        val minuteHandAngleRange =
-            ((minutesHandAngle.angle.roundToInt() - 7)..(minutesHandAngle.angle.roundToInt() + 7))
+        val minuteHandAngleRange = minutesHand.sector.asRange()
         val hourHandAngleRange =
             ((hoursHandAngle.angle.roundToInt() - 7)..(hoursHandAngle.angle.roundToInt() + 7))
         possibleAngleRange = (0..360) - minuteHandAngleRange - hourHandAngleRange
@@ -230,7 +214,7 @@ class ParticleClock @JvmOverloads constructor(
             val isHour = analogClockGeometry.isSectorStart(Minute(minute))
 
             val radius = if (isHour) 20f else 10f
-            val paint = if (isHour) hourPaint else minutePaint
+            val paint = if (isHour) hourPaint else minutesHand.minutePaint
             val indicator = TemporaryHolders.circle
             indicator.center.copyFrom(point)
             indicator.radius = radius
@@ -289,7 +273,7 @@ class ParticleClock @JvmOverloads constructor(
     }
 
     private fun setMinuteHandAngle(minute: Int, seconds: Int) {
-        minutesHandAngle = analogClockGeometry.minuteToAngle(Minute(minute), Second(seconds))
+        minutesHand.angle = analogClockGeometry.minuteToAngle(Minute(minute), Second(seconds))
     }
 
     override fun surfaceCreated(holder: SurfaceHolder) {
