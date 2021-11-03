@@ -27,7 +27,7 @@ class ParticlesHolder {
             val point = PolarPoint(distanceFromCenter)
 
 
-            point.angle = randomAngle
+            point.angle = Angle(randomAngle)
             val bubble =
                 Bubble(style = style, point = point, radius = bubbleRadius, autoMove = autoMove)
 

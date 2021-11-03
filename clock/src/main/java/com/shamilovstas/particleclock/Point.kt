@@ -16,9 +16,9 @@ class CartesianPoint(
     }
 
     override fun toPolar(obj: PolarCoordinate) {
-        val angle = atan2(y.toDouble(), x.toDouble()).toDegrees()
+        val angle = Angle((atan2(y.toDouble(), x.toDouble()).toDegrees()).toFloat())
         val radius = hypot(x, y)
-        obj.angle = angle.toFloat()
+        obj.angle = angle
         obj.radius = radius
     }
 
@@ -59,10 +59,10 @@ class PolarPoint(
     override var radius: Float = 0f
 ) : PolarCoordinate, Refreshable {
 
-    override var angle: Float = 0f
+    override var angle: Angle = Angle(0f)
         set(value) {
             field = value
-            val pi = field.toRadian()
+            val pi = field.toRadians()
             angleCos = cos(pi)
             angleSin = sin(pi)
         }
@@ -89,7 +89,7 @@ class PolarPoint(
     }
 
     override fun refresh() {
-        angle = 0f
+        angle = Angle(0f)
         radius = 0f
     }
 
@@ -127,7 +127,7 @@ interface CartesianCoordinate {
 }
 
 interface PolarCoordinate {
-    var angle: Float
+    var angle: Angle
     var radius: Float
 
     fun copyFrom(other: PolarCoordinate)

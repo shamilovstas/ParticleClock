@@ -19,26 +19,26 @@ class AnalogClockGeometry {
 
     }
 
-    fun hourToAngle(hour: Hour, minute: Minute = Minute(0), second: Second = Second(0)): Float {
+    fun hourToAngle(hour: Hour, minute: Minute = Minute(0), second: Second = Second(0)): Angle {
         require(hour.value in hoursRange)
         val angle = (CLOCK_START_ANGLE + hour.value * DEGREES_PER_HOUR) % FULL_ANGLE
         val minuteAngle = minute.value.toFloat() / MINUTES_PER_HOUR * DEGREES_PER_HOUR
         val secondsAngle = second.value.toFloat() / SECONDS_PER_HOUR * DEGREES_PER_HOUR
-        return angle + minuteAngle + secondsAngle
+        return Angle(angle + minuteAngle + secondsAngle)
     }
 
-    fun minuteToAngle(minute: Minute, seconds: Second = Second(0)): Float {
+    fun minuteToAngle(minute: Minute, seconds: Second = Second(0)): Angle {
         require(minute.value in minutesRange)
         require(seconds.value in secondsRange)
         val angle = (CLOCK_START_ANGLE + minute.value * DEGREES_PER_MINUTE) % FULL_ANGLE
         val secondsAngle = seconds.value.toFloat() / SECONDS_PER_MINUTE * DEGREES_PER_MINUTE
-        return angle.toFloat() + secondsAngle
+        return Angle(angle.toFloat() + secondsAngle)
     }
 
-    fun secondsToAngle(second: Second): Float {
+    fun secondsToAngle(second: Second): Angle {
         require(second.value in secondsRange)
         val angle = (CLOCK_START_ANGLE + second.value * DEGREES_PER_SECOND) % FULL_ANGLE
-        return angle.toFloat()
+        return Angle(angle.toFloat())
     }
 
     fun isSectorStart(minute: Minute): Boolean {

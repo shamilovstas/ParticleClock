@@ -26,7 +26,7 @@ class CircleTest {
         circle.radius = radius
         val expected = CartesianPoint(radius + center.x, center.y)
         val actual = CartesianPoint().apply {
-            circle.getPoint(0f, this)
+            circle.getPoint(Angle(0f), this)
         }
         assertEquals(expected, actual)
     }

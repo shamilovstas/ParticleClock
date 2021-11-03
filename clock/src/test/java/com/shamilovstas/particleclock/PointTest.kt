@@ -18,17 +18,17 @@ class PointTest {
     @Test
     fun `should clean polar point when refresh is called`() {
         val point = PolarPoint(180f)
-        point.angle = 5f
+        point.angle = Angle(5f)
         point.refresh()
         assertEquals(point.radius, 0f, angleDelta)
-        assertEquals(point.angle, 0f, angleDelta)
+        assertEquals(point.angle.angle, 0f, angleDelta)
     }
 
     @Test
     fun `should convert cartesian point when converted from polar`() {
         val expected = CartesianPoint(-5f, 0f)
-        val polar = PolarPoint(180f)
-        polar.angle = 5f
+        val polar = PolarPoint(5f)
+        polar.angle = Angle(180f)
 
         val actual = polar.toCartesian()
 
@@ -38,34 +38,34 @@ class PointTest {
 
     @Test
     fun `should convert polar point when converted from cartesian`() {
-        val expected = PolarPoint(180f)
-        expected.angle = 5f
+        val expected = PolarPoint(5f)
+        expected.angle = Angle(180f)
 
         val cartesian: CartesianCoordinate = CartesianPoint(-5f, 0f)
         val actual = cartesian.toPolar()
 
-        assertEquals(expected.angle, actual.angle, angleDelta)
+        assertEquals(expected.angle.angle, actual.angle.angle, angleDelta)
         assertEquals(expected.radius, actual.radius, angleDelta)
     }
 
     @Test
     fun `should convert polar point when used existing instance`() {
-        val expected = PolarPoint(180f)
-        expected.angle = 5f
+        val expected = PolarPoint(5f)
+        expected.angle = Angle(180f)
 
         val actual = PolarPoint()
         val cartesian = CartesianPoint(-5f, 0f)
         cartesian.toPolar(actual)
 
-        assertEquals(expected.angle, actual.angle, angleDelta)
+        assertEquals(expected.angle.angle, actual.angle.angle, angleDelta)
         assertEquals(expected.radius, actual.radius, angleDelta)
     }
 
     @Test
     fun `should convert cartesian point when used existing instance`() {
         val expected = CartesianPoint(-5f, 0f)
-        val polar = PolarPoint(180f)
-        polar.angle = 5f
+        val polar = PolarPoint(5f)
+        polar.angle = Angle(180f)
 
         val actual = CartesianPoint()
         polar.toCartesian(actual)
@@ -85,7 +85,7 @@ class PointTest {
     @Test
     fun `should init polar when copied from another instance`() {
         val expected = PolarPoint(180f)
-        expected.angle = 5f
+        expected.angle = Angle(5f)
 
         val actual = PolarPoint()
         actual.copyFrom(expected)

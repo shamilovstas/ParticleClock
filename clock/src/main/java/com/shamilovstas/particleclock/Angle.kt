@@ -10,7 +10,7 @@ value class Angle(val angle: Float = Float.NaN) {
     }
 
     init {
-        require(angle in 0f..360f || angle.isNaN())
+        require(angle in 0f..360f || angle.isNaN()) { "Incorrect angle: $angle" }
     }
 
     operator fun minus(arg: Angle): Angle {
@@ -34,5 +34,17 @@ value class Angle(val angle: Float = Float.NaN) {
     operator fun div(arg: Float): Angle {
         require(angle.isNaN().not())
         return Angle(this.angle / abs(arg))
+    }
+
+    operator fun compareTo(other: Angle): Int {
+        return this.angle.compareTo(other.angle)
+    }
+
+    fun isInitialized(): Boolean {
+        return this.angle.isNaN().not()
+    }
+
+    fun toRadians(): Double {
+        return Math.toRadians(this.angle.toDouble())
     }
 }

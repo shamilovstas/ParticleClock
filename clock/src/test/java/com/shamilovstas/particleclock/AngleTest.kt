@@ -70,5 +70,24 @@ class AngleTest {
         assertEquals(expected.angle, actual.angle, 0.00001f)
     }
 
+    @Test
+    fun `should be PI radius when angle is 180`() {
+        val expected = Math.PI
+        val actual = Angle(180f).toRadians()
+        assertEquals(expected, actual, 0.00001)
+    }
+
+    @Test
+    fun `should not be initialized when created with default value`() {
+        val justCreated = Angle()
+        assertFalse(justCreated.isInitialized())
+    }
+
+    @Test
+    fun `should be initialized when created with a value`() {
+        val initialized = Angle(49f)
+        assertTrue(initialized.isInitialized())
+    }
+
     // 5 - 10 = 355
 }

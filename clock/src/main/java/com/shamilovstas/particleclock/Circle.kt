@@ -44,10 +44,12 @@ data class Circle(
         }
         get() = center.y.roundToInt()
 
-    fun getPoint(angle: Float, point: CartesianPoint) {
+    fun getPoint(angle: Angle, point: CartesianPoint) {
         _preallocatedPolarPoint.radius = radius
         _preallocatedPolarPoint.angle = angle
         _preallocatedPolarPoint.toCartesian(point)
+        point.x += center.x
+        point.y += center.y
     }
 
     override fun refresh() {
@@ -56,5 +58,4 @@ data class Circle(
     }
 }
 
-fun Number.toRadian() = Math.toRadians(this.toDouble())
 fun Number.toDegrees() = Math.toDegrees(this.toDouble())
