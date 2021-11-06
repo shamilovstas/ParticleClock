@@ -88,4 +88,59 @@ class AngleTest {
         val initialized = Angle(51f)
         assertTrue(initialized.isInitialized())
     }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `should throw when subtracting and left arg is not initialized`() {
+        val left = Angle(Float.NaN)
+        val right = Angle(45f)
+        left - right
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `should throw when subtracting and right arg is not initialized`() {
+        val left = Angle(45f)
+        val right = Angle(Float.NaN)
+        left - right
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `should throw when adding and left arg is not initialized`() {
+        val left = Angle(Float.NaN)
+        val right = Angle(45f)
+        left + right
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `should throw when adding and right arg is not initialized`() {
+        val left = Angle(45f)
+        val right = Angle(Float.NaN)
+        left + right
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `should throw when dividing and right arg is not initialized`() {
+        val left = Angle(Float.NaN)
+        val right = Float.NaN
+        left / right
+    }
+
+    @Test
+    fun `should correctly compare angles when compared`() {
+        var first = Angle(20f)
+        var second = Angle(290f)
+        assertTrue(first < second)
+
+        first = Angle(310f)
+        second = Angle(5f)
+        assertTrue(first > second)
+
+        first = Angle(100f)
+        second = Angle(100f)
+        assertTrue(first == second)
+    }
+
+    @Test
+    fun `should NOT_INITIALIZED angle be not initialized`() {
+        assertTrue(Angle.NOT_INITIALIZED.isInitialized().not())
+    }
 }

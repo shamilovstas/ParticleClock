@@ -1,6 +1,5 @@
 package com.shamilovstas.particleclock
 
-import androidx.annotation.FloatRange
 import kotlin.math.roundToInt
 
 data class Sector(
@@ -8,6 +7,8 @@ data class Sector(
     var end: Angle = Angle.NOT_INITIALIZED
 ) {
     fun asRange(): IntRange {
+        require(start.isInitialized())
+        require(end.isInitialized())
         return start.angle.roundToInt()..end.angle.roundToInt()
     }
 }

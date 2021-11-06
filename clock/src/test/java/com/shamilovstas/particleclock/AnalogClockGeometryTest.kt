@@ -80,4 +80,11 @@ class AnalogClockGeometryTest {
         val actual = analogClock.minuteToAngle(Minute(15), Second(30))
         assertEquals(expected, actual)
     }
+
+    @Test
+    fun `should return 90 degrees when set 6 hours`() {
+        val expected = Angle(90f)
+        val actual = analogClock.hourToAngle(Hour(6))
+        assertEquals(expected, actual)
+    }
 }
