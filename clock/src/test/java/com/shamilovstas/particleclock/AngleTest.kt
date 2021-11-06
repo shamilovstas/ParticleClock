@@ -88,4 +88,39 @@ class AngleTest {
         val initialized = Angle(51f)
         assertTrue(initialized.isInitialized())
     }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `should throw when subtracting and left arg is not initialized`() {
+        val left = Angle(Float.NaN)
+        val right = Angle(45f)
+        left - right
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `should throw when subtracting and right arg is not initialized`() {
+        val left = Angle(45f)
+        val right = Angle(Float.NaN)
+        left - right
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `should throw when adding and left arg is not initialized`() {
+        val left = Angle(Float.NaN)
+        val right = Angle(45f)
+        left + right
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `should throw when adding and right arg is not initialized`() {
+        val left = Angle(45f)
+        val right = Angle(Float.NaN)
+        left + right
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `should throw when dividing and right arg is not initialized`() {
+        val left = Angle(Float.NaN)
+        val right = Float.NaN
+        left / right
+    }
 }

@@ -14,7 +14,8 @@ value class Angle(val angle: Float = Float.NaN) {
     }
 
     operator fun minus(arg: Angle): Angle {
-        require(angle.isNaN().not())
+        require(isInitialized())
+        require(arg.isInitialized())
         var result = this.angle - arg.angle
         if (result < 0f) {
             result += 360f
@@ -23,7 +24,8 @@ value class Angle(val angle: Float = Float.NaN) {
     }
 
     operator fun plus(arg: Angle): Angle {
-        require(angle.isNaN().not())
+        require(isInitialized())
+        require(arg.isInitialized())
         var result = this.angle + arg.angle
         if (result > 360f) {
             result -= 360f
@@ -32,7 +34,8 @@ value class Angle(val angle: Float = Float.NaN) {
     }
 
     operator fun div(arg: Float): Angle {
-        require(angle.isNaN().not())
+        require(isInitialized())
+        require(arg.isNaN().not())
         return Angle(this.angle / abs(arg))
     }
 
