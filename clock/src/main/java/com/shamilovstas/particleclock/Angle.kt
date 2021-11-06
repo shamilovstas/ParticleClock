@@ -1,5 +1,6 @@
 package com.shamilovstas.particleclock
 
+import androidx.annotation.VisibleForTesting
 import kotlin.math.abs
 
 @JvmInline
@@ -7,6 +8,8 @@ value class Angle(val angle: Float = Float.NaN) {
 
     companion object {
         val NOT_INITIALIZED = Angle(angle = Float.NaN)
+        @VisibleForTesting
+        val ANGLE_DELTA = 0.000001f
     }
 
     init {
@@ -40,7 +43,11 @@ value class Angle(val angle: Float = Float.NaN) {
     }
 
     operator fun compareTo(other: Angle): Int {
-        return this.angle.compareTo(other.angle)
+        return when {
+            abs(this.angle - other.angle) < ANGLE_DELTA -> 0
+            this.angle < other.angle -> -1
+            else -> 1
+        }
     }
 
     fun isInitialized(): Boolean {

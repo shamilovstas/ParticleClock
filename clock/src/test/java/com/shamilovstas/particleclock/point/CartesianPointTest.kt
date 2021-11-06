@@ -9,14 +9,13 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class CartesianPointTest {
-    private val angleDelta = 0.000001f
 
     @Test
     fun `should clean cartesian point when refresh is called`() {
         val point = CartesianPoint(-5f, 0f)
         point.refresh()
-        assertEquals(point.x, 0f, angleDelta)
-        assertEquals(point.y, 0f, angleDelta)
+        assertEquals(point.x, 0f, Angle.ANGLE_DELTA)
+        assertEquals(point.y, 0f, Angle.ANGLE_DELTA)
     }
 
     @Test
@@ -27,8 +26,8 @@ class CartesianPointTest {
         val cartesian: CartesianCoordinate = CartesianPoint(-5f, 0f)
         val actual = cartesian.toPolar()
 
-        assertEquals(expected.angle.angle, actual.angle.angle, angleDelta)
-        assertEquals(expected.radius, actual.radius, angleDelta)
+        assertEquals(expected.angle.angle, actual.angle.angle, Angle.ANGLE_DELTA)
+        assertEquals(expected.radius, actual.radius, Angle.ANGLE_DELTA)
     }
 
     @Test
@@ -40,8 +39,8 @@ class CartesianPointTest {
         val actual = CartesianPoint()
         polar.toCartesian(actual)
 
-        assertEquals(expected.x, actual.x, angleDelta)
-        assertEquals(expected.y, actual.y, angleDelta)
+        assertEquals(expected.x, actual.x, Angle.ANGLE_DELTA)
+        assertEquals(expected.y, actual.y, Angle.ANGLE_DELTA)
     }
 
     @Test

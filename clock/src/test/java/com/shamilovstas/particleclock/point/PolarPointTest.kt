@@ -4,19 +4,18 @@ import com.shamilovstas.particleclock.Angle
 import com.shamilovstas.particleclock.CartesianPoint
 import com.shamilovstas.particleclock.PolarPoint
 import org.junit.Assert
+import org.junit.Assert.*
 import org.junit.Test
 
 class PolarPointTest {
-
-    private val angleDelta = 0.000001f
 
     @Test
     fun `should clean polar point when refresh is called`() {
         val point = PolarPoint(180f)
         point.angle = Angle(5f)
         point.refresh()
-        Assert.assertEquals(point.radius, 0f, angleDelta)
-        Assert.assertEquals(point.angle.angle, 0f, angleDelta)
+        assertEquals(point.radius, 0f, Angle.ANGLE_DELTA)
+        assertEquals(point.angle.angle, 0f, Angle.ANGLE_DELTA)
     }
 
     @Test
@@ -27,8 +26,8 @@ class PolarPointTest {
 
         val actual = polar.toCartesian()
 
-        Assert.assertEquals(expected.x, actual.x, angleDelta)
-        Assert.assertEquals(expected.y, actual.y, angleDelta)
+        assertEquals(expected.x, actual.x, Angle.ANGLE_DELTA)
+        assertEquals(expected.y, actual.y, Angle.ANGLE_DELTA)
     }
 
     @Test
@@ -40,8 +39,8 @@ class PolarPointTest {
         val cartesian = CartesianPoint(-5f, 0f)
         cartesian.toPolar(actual)
 
-        Assert.assertEquals(expected.angle.angle, actual.angle.angle, angleDelta)
-        Assert.assertEquals(expected.radius, actual.radius, angleDelta)
+        assertEquals(expected.angle.angle, actual.angle.angle, Angle.ANGLE_DELTA)
+        assertEquals(expected.radius, actual.radius, Angle.ANGLE_DELTA)
     }
 
     @Test
@@ -51,7 +50,7 @@ class PolarPointTest {
 
         val actual = PolarPoint()
         actual.copyFrom(expected)
-        Assert.assertEquals(expected, actual)
+        assertEquals(expected, actual)
     }
 
     @Test
@@ -60,7 +59,7 @@ class PolarPointTest {
         val angle = Angle(45f)
         val first = PolarPoint(radius).apply { this.angle = angle }
         val second = PolarPoint(radius).apply { this.angle = angle }
-        Assert.assertEquals(first.hashCode(), second.hashCode())
+        assertEquals(first.hashCode(), second.hashCode())
     }
 
     @Test
@@ -69,13 +68,13 @@ class PolarPointTest {
         val angle = Angle(45f)
         val first = PolarPoint(radius).apply { this.angle = angle }
         val second = PolarPoint(radius).apply { this.angle = angle }
-        Assert.assertTrue(first == second)
+        assertTrue(first == second)
     }
 
     @Test
     fun `should return false when cartesian points are not equal`() {
         val first = PolarPoint(23f).apply { this.angle = Angle(21f) }
         val second = PolarPoint(89f).apply { this.angle = Angle(87f) }
-        Assert.assertFalse(first == second)
+        assertFalse(first == second)
     }
 }
