@@ -7,9 +7,9 @@ class CartesianPoint(
     override var x: Float = 0f, override var y: Float = 0f
 ) : CartesianCoordinate, Refreshable {
 
-    constructor(x: Int, y: Int): this(x.toFloat(), y.toFloat())
+    constructor(x: Int, y: Int) : this(x.toFloat(), y.toFloat())
 
-    override fun toPolar(): PolarCoordinate {
+    override fun toPolar(): PolarPoint {
         return PolarPoint().also {
             toPolar(it)
         }
@@ -56,10 +56,11 @@ class CartesianPoint(
 }
 
 class PolarPoint(
-    override var radius: Radius = Radius(0f)
+    override var radius: Radius = Radius(0f),
+    angle: Angle = Angle(0f)
 ) : PolarCoordinate, Refreshable {
 
-    override var angle: Angle = Angle(0f)
+    override var angle: Angle = angle
         set(value) {
             field = value
             val pi = field.toRadians()
@@ -70,7 +71,7 @@ class PolarPoint(
 
     private var angleCos: Double = 1.0
     private var angleSin: Double = 0.0
-    override fun toCartesian(): CartesianCoordinate {
+    override fun toCartesian(): CartesianPoint {
         return CartesianPoint().also {
             toCartesian(it)
         }
