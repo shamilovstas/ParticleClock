@@ -3,14 +3,11 @@ package com.shamilovstas.particleclock.hand
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import com.shamilovstas.particleclock.Angle
-import com.shamilovstas.particleclock.CartesianPoint
-import com.shamilovstas.particleclock.PolarPoint
-import com.shamilovstas.particleclock.Sector
+import com.shamilovstas.particleclock.*
 
 
 class Hand(
-    var radius: Float = 0f,
+    var radius: Radius = Radius(0f),
     var sweepAngle: Angle = Angle(10f)
 ) {
 

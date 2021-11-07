@@ -7,7 +7,7 @@ import kotlin.math.roundToInt
 
 data class Circle(
     val center: CartesianPoint = CartesianPoint(),
-    var radius: Float = 0f
+    var radius: Radius = Radius(0f)
 ) : Refreshable {
 
     private val rect = Rect()
@@ -20,10 +20,10 @@ data class Circle(
 
     val boundingRectF: RectF
         get() = rectF.apply {
-            left = center.x - radius
-            right = center.x + radius
-            top = center.y - radius
-            bottom = center.y + radius
+            left = center.x - radius.value
+            right = center.x + radius.value
+            top = center.y - radius.value
+            bottom = center.y + radius.value
         }
 
     var x: Int
@@ -40,7 +40,7 @@ data class Circle(
 
     override fun refresh() {
         center.refresh()
-        radius = 0f
+        radius = Radius(0f)
     }
 }
 

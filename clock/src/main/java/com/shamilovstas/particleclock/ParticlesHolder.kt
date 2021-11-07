@@ -1,25 +1,21 @@
 package com.shamilovstas.particleclock
 
 import com.shamilovstas.particleclock.Bubble.Companion.INITIAL_RADIUS
-import com.shamilovstas.particleclock.ParticleClock.Companion.BUBBLE_SPAWN_CENTER_MARGIN
 import kotlin.random.Random
 
 class ParticlesHolder {
 
     val bubbles = mutableListOf<Bubble>()
 
-    fun init(radius: Float) {
+    fun init(radius: Radius) {
         bubbles.clear()
 
-        val minDistance = ParticleClock.BUBBLE_SPAWN_CENTER_MARGIN
-        val maxDistance = radius - ParticleClock.OUTER_SECONDS_TRACK_MARGIN
+        val minDistance = Radius(ParticleClock.BUBBLE_SPAWN_CENTER_MARGIN)
+        val maxDistance: Radius = radius - ParticleClock.OUTER_SECONDS_TRACK_MARGIN
         repeat(PARTICLES_COUNT) {
             val style = if (Random.nextBoolean()) Style.FILL else Style.STROKE
-            val bubbleRadius = INITIAL_RADIUS
-            val distanceFromCenter = Random.nextFloat(
-                minDistance,
-                maxDistance
-            )
+            val bubbleRadius = Radius(INITIAL_RADIUS)
+            val distanceFromCenter = Radius(Random.nextFloat(minDistance.value, maxDistance.value))
             val randomAngle = Random.nextFloat() * 360f
 
             val autoMove = Random.nextInt(0, 6) % 5 == 0
@@ -31,19 +27,22 @@ class ParticlesHolder {
             val bubble =
                 Bubble(style = style, point = point, radius = bubbleRadius, autoMove = autoMove)
 
+
+            val start = distanceFromCenter - ParticleClock.BUBBLE_SPAWN_CENTER_MARGIN
+
             bubble.setRadiusMultiplier(
                 getDistancePercent(
-                    distanceFromCenter - BUBBLE_SPAWN_CENTER_MARGIN,
-                    maxDistance - BUBBLE_SPAWN_CENTER_MARGIN
+                    start,
+                    maxDistance - ParticleClock.BUBBLE_SPAWN_CENTER_MARGIN
                 )
             )
             bubbles.add(bubble)
         }
     }
 
-    fun getDistancePercent(start: Float, end: Float): Double {
+    fun getDistancePercent(start: Radius, end: Radius): Double {
         require(start <= end)
-        return 1.0 - start / end;
+        return 1.0 - (start / end).value;
     }
 
     companion object {

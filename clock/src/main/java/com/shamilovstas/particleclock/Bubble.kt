@@ -7,7 +7,7 @@ import kotlin.math.sin
 class Bubble(
     val point: PolarPoint,
     val style: Style,
-    var radius: Float,
+    var radius: Radius,
     val autoMove: Boolean
 ) {
 
@@ -30,7 +30,7 @@ class Bubble(
 
     fun setRadiusMultiplier(multiplier: Double) {
         this.alpha = (sin(multiplier * Math.PI) * 255f).toInt()
-        this.radius = INITIAL_RADIUS * sin(multiplier * Math.PI).toFloat()
+        this.radius = Radius(INITIAL_RADIUS * sin(multiplier * Math.PI).toFloat())
     }
 }
 

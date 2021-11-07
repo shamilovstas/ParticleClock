@@ -2,6 +2,7 @@ package com.shamilovstas.particleclock.hand
 
 import android.graphics.Canvas
 import com.shamilovstas.particleclock.Angle
+import com.shamilovstas.particleclock.Radius
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.mockito.kotlin.mock
@@ -14,7 +15,7 @@ class HandTest {
     fun `should calculate hand sector when angle is set`() {
         val sweepAngle = Angle(10.toFloat())
         val handAngle = Angle(120f)
-        val hand = Hand(12f, sweepAngle)
+        val hand = Hand(Radius(12f), sweepAngle)
         hand.angle = handAngle
 
         val expectedStart = handAngle - sweepAngle / 2f
@@ -25,7 +26,7 @@ class HandTest {
 
     @Test
     fun `should not draw when angle is not set`() {
-        val hand = Hand(12f)
+        val hand = Hand(Radius(12f))
         val canvas = mock<Canvas>()
 
         hand.draw(canvas, mock())
@@ -34,7 +35,7 @@ class HandTest {
 
     @Test
     fun `should draw when angle is set`() {
-        val hand = Hand(12f)
+        val hand = Hand(Radius(12f))
         hand.angle = Angle(230f)
         val canvas = mock<Canvas>()
 

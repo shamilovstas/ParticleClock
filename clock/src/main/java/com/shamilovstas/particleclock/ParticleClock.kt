@@ -8,6 +8,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
+import android.util.Log
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.view.animation.AccelerateDecelerateInterpolator
@@ -70,12 +71,12 @@ class ParticleClock @JvmOverloads constructor(
     // endregion
     // region Objects
     var secondsHandAngle = Angle()
-    var minutesHand = Hand(600f)
-    var hoursHand = Hand(400f)
+    var minutesHand = Hand(Radius(600f))
+    var hoursHand = Hand(Radius(400f))
 
     var possibleAngleRange: List<Int> = listOf()
 
-    var radius: Float = 0f
+    var clockRadius: Radius = Radius()
     var center: CartesianPoint = CartesianPoint()
 
     val analogClockGeometry = AnalogClockGeometry()
@@ -105,8 +106,9 @@ class ParticleClock @JvmOverloads constructor(
         val cx = w / 2
         val cy = h / 2
         center = CartesianPoint(cx, cy)
-        radius = min(cx, cy) - 40f
-        particlesHolder.init(radius)
+        clockRadius = Radius(min(cx, cy) - 40f)
+        Log.d("Radius", "onSizeChanged: $clockRadius")
+        particlesHolder.init(clockRadius)
     }
     // endregion
 
@@ -115,7 +117,7 @@ class ParticleClock @JvmOverloads constructor(
     }
 
     private fun pulse(): Animator {
-        val maxRadius = radius - OUTER_SECONDS_TRACK_MARGIN
+        val maxRadius = clockRadius - OUTER_SECONDS_TRACK_MARGIN
         val pulseAnimator = ValueAnimator.ofInt(0, 25)
         val linearAnimator = ValueAnimator.ofInt(0, 70)
         linearAnimator.duration = 1000
@@ -152,13 +154,13 @@ class ParticleClock @JvmOverloads constructor(
         // region 2. Drawing the seconds track (may be referred as the 'inner circle')
         drawSecondsTrack(
             canvas,
-            radius - OUTER_SECONDS_TRACK_MARGIN,
+            clockRadius - OUTER_SECONDS_TRACK_MARGIN,
             Angle(OUTER_SECONDS_INDICATOR_SWEEP_ANGLE)
         )
         TemporaryHolders.refresh()
         drawSecondsTrack(
             canvas,
-            INNER_SECONDS_TRACK_MARGIN,
+            Radius(INNER_SECONDS_TRACK_MARGIN),
             Angle(INNER_SECONDS_INDICATOR_SWEEP_ANGLE)
         )
         TemporaryHolders.refresh()
@@ -190,7 +192,7 @@ class ParticleClock @JvmOverloads constructor(
         for (minute in 0 until MINUTES_IN_HOUR) {
             val angle = Angle((minute * DEGREE_PER_SEGMENT).toFloat())
             TemporaryHolders.polarPoint.also {
-                it.radius = radius
+                it.radius = clockRadius
                 it.angle = angle
             }.run { toCartesian(TemporaryHolders.cartesianPoint) }
             val point = TemporaryHolders.cartesianPoint
@@ -200,12 +202,12 @@ class ParticleClock @JvmOverloads constructor(
             val paint = if (isHour) hourPaint else minutePaint
             val indicator = TemporaryHolders.circle
             indicator.center.copyFrom(point)
-            indicator.radius = radius
+            indicator.radius = Radius(radius)
             indicator.draw(canvas, paint)
         }
     }
 
-    private fun drawSecondsTrack(canvas: Canvas, radius: Float, indicatorAngle: Angle) {
+    private fun drawSecondsTrack(canvas: Canvas, radius: Radius, indicatorAngle: Angle) {
         val circle = TemporaryHolders.circle
         circle.radius = radius
         circle.draw(canvas, secondsTrackPaint)
@@ -267,7 +269,7 @@ class ParticleClock @JvmOverloads constructor(
     }
 
     private fun createParticlesMovementUpdater(
-        maxRadius: Float,
+        maxRadius: Radius,
         kind: MovementType
     ): ValueAnimator.AnimatorUpdateListener {
         return object : ValueAnimator.AnimatorUpdateListener {
@@ -283,10 +285,10 @@ class ParticleClock @JvmOverloads constructor(
                     }
                     val point = bubble.point
                     val radius = point.radius
-                    var newRadius = radius + value
+                    var newRadius = radius + value.toFloat()
 
                     if (newRadius > maxRadius) {
-                        newRadius = BUBBLE_SPAWN_CENTER_MARGIN
+                        newRadius = Radius(BUBBLE_SPAWN_CENTER_MARGIN)
                         val angle = possibleAngleRange.random() + Random.nextFloat(-1f, +1f)
                         point.angle = Angle(abs(angle) % 360)
                     }
@@ -311,7 +313,7 @@ class ParticleClock @JvmOverloads constructor(
         const val MIN_SIZE = 1000
         const val MINUTES_IN_HOUR = 60
         const val DEGREE_PER_SEGMENT = 360 / 60
-        const val OUTER_SECONDS_TRACK_MARGIN = 50
+        const val OUTER_SECONDS_TRACK_MARGIN = 50f
         const val INNER_SECONDS_TRACK_MARGIN = 80f
         const val BUBBLE_SPAWN_CENTER_MARGIN = INNER_SECONDS_TRACK_MARGIN
         const val OUTER_SECONDS_INDICATOR_SWEEP_ANGLE = 4f

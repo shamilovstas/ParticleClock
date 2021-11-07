@@ -26,7 +26,7 @@ class CircleInstrumentedTest {
             bottom = center.y + radius
         }
         circle.center.copyFrom(center)
-        circle.radius = radius
+        circle.radius = Radius(radius)
 
         assertEquals(expected, circle.boundingRectF)
     }
