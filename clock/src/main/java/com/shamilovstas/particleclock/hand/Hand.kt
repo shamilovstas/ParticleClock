@@ -9,7 +9,6 @@ import com.shamilovstas.particleclock.PolarPoint
 import com.shamilovstas.particleclock.Sector
 
 
-// TODO tests
 class Hand(
     var radius: Float = 0f,
     var sweepAngle: Angle = Angle(10f)
