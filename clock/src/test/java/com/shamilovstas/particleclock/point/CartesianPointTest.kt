@@ -1,9 +1,6 @@
 package com.shamilovstas.particleclock.point
 
-import com.shamilovstas.particleclock.Angle
-import com.shamilovstas.particleclock.CartesianCoordinate
-import com.shamilovstas.particleclock.CartesianPoint
-import com.shamilovstas.particleclock.PolarPoint
+import com.shamilovstas.particleclock.*
 import org.junit.Assert
 import org.junit.Assert.*
 import org.junit.Test
@@ -20,20 +17,20 @@ class CartesianPointTest {
 
     @Test
     fun `should convert polar point when converted from cartesian`() {
-        val expected = PolarPoint(5f)
+        val expected = PolarPoint(Radius(5f))
         expected.angle = Angle(180f)
 
         val cartesian: CartesianCoordinate = CartesianPoint(-5f, 0f)
         val actual = cartesian.toPolar()
 
         assertEquals(expected.angle.angle, actual.angle.angle, Angle.ANGLE_DELTA)
-        assertEquals(expected.radius, actual.radius, Angle.ANGLE_DELTA)
+        assertEquals(expected.radius.value, actual.radius.value, Angle.ANGLE_DELTA)
     }
 
     @Test
     fun `should convert cartesian point when used existing instance`() {
         val expected = CartesianPoint(-5f, 0f)
-        val polar = PolarPoint(5f)
+        val polar = PolarPoint(Radius(5f))
         polar.angle = Angle(180f)
 
         val actual = CartesianPoint()

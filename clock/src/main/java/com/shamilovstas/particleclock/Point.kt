@@ -17,7 +17,7 @@ class CartesianPoint(
 
     override fun toPolar(obj: PolarCoordinate) {
         val angle = Angle((atan2(y.toDouble(), x.toDouble()).toDegrees()).toFloat())
-        val radius = hypot(x, y)
+        val radius = Radius(hypot(x, y))
         obj.angle = angle
         obj.radius = radius
     }
@@ -56,7 +56,7 @@ class CartesianPoint(
 }
 
 class PolarPoint(
-    override var radius: Float = 0f
+    override var radius: Radius = Radius(0f)
 ) : PolarCoordinate, Refreshable {
 
     override var angle: Angle = Angle(0f)
@@ -77,8 +77,8 @@ class PolarPoint(
     }
 
     override fun toCartesian(obj: CartesianCoordinate) {
-        val x = radius * angleCos
-        val y = radius * angleSin
+        val x = radius.value * angleCos
+        val y = radius.value * angleSin
         obj.x = x.toFloat()
         obj.y = y.toFloat()
     }
@@ -90,7 +90,7 @@ class PolarPoint(
 
     override fun refresh() {
         angle = Angle(0f)
-        radius = 0f
+        radius = Radius(0f)
     }
 
     override fun toString(): String {
@@ -128,7 +128,7 @@ interface CartesianCoordinate {
 
 interface PolarCoordinate {
     var angle: Angle
-    var radius: Float
+    var radius: Radius
 
     fun copyFrom(other: PolarCoordinate)
     fun toCartesian(): CartesianCoordinate

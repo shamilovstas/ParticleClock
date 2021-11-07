@@ -20,13 +20,13 @@ class CircleTest {
 
     @Test
     fun `should set fields to 0 when refresh is called`() {
-        circle.radius = 25f
+        circle.radius = Radius(25f)
         circle.center.x = 52f
         circle.center.y = 512f
 
         circle.refresh()
         assertEquals(circle.x, 0)
         assertEquals(circle.y, 0)
-        assertEquals(circle.radius, 0f)
+        assertEquals(circle.radius.value, 0f)
     }
 }
