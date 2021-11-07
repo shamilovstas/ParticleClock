@@ -23,7 +23,9 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
-      run: ./gradlew build
+      run: ./gradlew assembleDebug
+    - name: Run tests
+      run: ./gradlew testDebugUnitTest
     - name: Generate Jacoco report
       run: ./gradlew jacocoTestReport
     - name: Upload coverage to Codecov
