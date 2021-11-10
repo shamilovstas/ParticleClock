@@ -15,6 +15,15 @@ class AngleTest {
     }
 
     @Test
+    fun `should return angle 15 when raw 45 subtracted from angle 60`() {
+        val angle60 = Angle(60f)
+        val raw45 = 45f
+        val expected = Angle(15f)
+        val actual = angle60 - raw45
+        assertEquals(expected, actual)
+    }
+
+    @Test
     fun `should return angle 355 when angle 10 subtracted from angle 5`() {
         val angle5 = Angle(5f)
         val angle10 = Angle(10f)

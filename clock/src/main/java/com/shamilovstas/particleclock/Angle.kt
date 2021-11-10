@@ -36,6 +36,14 @@ value class Angle(val angle: Float = Float.NaN) {
         return Angle(result)
     }
 
+    operator fun plus(float: Float): Angle {
+        return this.plus(Angle(float))
+    }
+
+    operator fun minus(float: Float): Angle {
+        return this.minus(Angle(float))
+    }
+
     operator fun div(arg: Float): Angle {
         require(isInitialized())
         require(arg.isNaN().not())
