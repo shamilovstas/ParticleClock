@@ -268,6 +268,7 @@ class ParticleClock @JvmOverloads constructor(
         drawingThread.interrupt()
     }
 
+    // This method might be the source of the occasional native crashes
     private fun createParticlesMovementUpdater(
         maxRadius: Radius,
         kind: MovementType

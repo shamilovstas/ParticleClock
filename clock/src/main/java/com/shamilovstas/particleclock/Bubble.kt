@@ -3,6 +3,7 @@ package com.shamilovstas.particleclock
 import android.graphics.Canvas
 import android.graphics.Paint
 import kotlin.math.sin
+import kotlin.random.Random
 
 class Bubble(
     val point: PolarPoint,
@@ -11,13 +12,13 @@ class Bubble(
     val autoMove: Boolean
 ) {
 
-    private var alpha: Int = 1
+    private var alpha: Int = 255
 
     companion object {
         const val INITIAL_RADIUS = 10f
     }
 
-    private val __preallocatedCartesian = CartesianPoint()
+    val cartesianPoint: CartesianPoint = point.toCartesian()
 
     fun draw(canvas: Canvas, paint: Paint) {
         paint.style = when (style) {
@@ -25,7 +26,7 @@ class Bubble(
             Style.STROKE -> Paint.Style.STROKE
         }
         paint.alpha = alpha
-        point.drawCircle(canvas, paint, radius, __preallocatedCartesian)
+        point.drawCircle(canvas, paint, radius, cartesianPoint)
     }
 
     fun setRadiusMultiplier(multiplier: Double) {
