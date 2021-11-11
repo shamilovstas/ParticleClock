@@ -74,7 +74,7 @@ class Hand(
             var previous = 0f
             override fun onAnimationUpdate(animation: ValueAnimator) {
                 val animatedValue = animation.animatedValue as Float
-                val value = animatedValue - previous
+                val value = abs(animatedValue - previous) % radius.value
                 previous = animatedValue
                 val point = bubble.point
                 val radius = point.radius
