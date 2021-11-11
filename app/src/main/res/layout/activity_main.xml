@@ -17,32 +17,49 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
         <CheckBox
             android:id="@+id/auto_mode"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
+            android:layout_weight="1"
             android:checked="true"
             android:text="Auto mode enabled" />
+
         <TextView
             android:id="@+id/time"
             android:layout_width="wrap_content"
-            android:layout_gravity="center_vertical"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:layout_marginTop="8dp"
             android:textSize="14sp" />
     </LinearLayout>
 
 
     <SeekBar
-        android:id="@+id/time_seekbar"
-        android:enabled = "false"
+        android:id="@+id/hours_seekbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:max="86399" />
+        android:enabled="false"
+        android:max="23" />
 
+    <SeekBar
+        android:id="@+id/minutes_seekbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:enabled="false"
+        android:max="59" />
+
+    <SeekBar
+        android:id="@+id/seconds_seekbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:enabled="false"
+        android:max="59" />
 
 
 </LinearLayout>
