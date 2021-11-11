@@ -60,6 +60,8 @@ class PolarPoint(
     angle: Angle = Angle(0f)
 ) : PolarCoordinate, Refreshable {
 
+    override val startCoordinate = CartesianPoint()
+
     override var angle: Angle = angle
         set(value) {
             field = value
@@ -78,8 +80,8 @@ class PolarPoint(
     }
 
     override fun toCartesian(obj: CartesianCoordinate) {
-        val x = radius.value * angleCos
-        val y = radius.value * angleSin
+        val x = startCoordinate.x + radius.value * angleCos
+        val y = startCoordinate.y + radius.value * angleSin
         obj.x = x.toFloat()
         obj.y = y.toFloat()
     }
@@ -128,6 +130,9 @@ interface CartesianCoordinate {
 }
 
 interface PolarCoordinate {
+
+    val startCoordinate: CartesianCoordinate
+
     var angle: Angle
     var radius: Radius
 

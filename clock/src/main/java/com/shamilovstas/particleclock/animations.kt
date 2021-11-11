@@ -9,6 +9,10 @@ fun animateFloat(pair: Pair<Float, Float>, block: ValueAnimator.() -> Unit): Val
     return animator
 }
 
+fun animateFloat(from: Float, to: Float, block: ValueAnimator.() -> Unit): ValueAnimator {
+    return animateFloat(from to to, block)
+}
+
 fun animateInt(pair: Pair<Int, Int>, block: ValueAnimator.() -> Unit): ValueAnimator {
     val animator = ValueAnimator.ofInt(pair.first, pair.second)
     block(animator)
