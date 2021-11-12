@@ -19,17 +19,15 @@ class Hand(
     val clock: ParticleClock
 ) {
 
-    // region preallocated
-    private var polarPoint = PolarPoint(radius = radius)
-    private var cartesianPoint = CartesianPoint()
-    // endregion
+    val bubbles = mutableListOf<CartesianPoint>()
 
-    val paint = Paint().apply {
-        color = Color.RED
-        strokeWidth = 15f
+    init {
+        repeat(PARTICLE_COUNT) {
+            val x = Random.nextFloat(0f, radius.value)
+            val y = Random.nextFloat(-10f, 10f)
+            bubbles.add(CartesianPoint(x = x, y = y))
+        }
     }
-
-    val bubble = Bubble(PolarPoint(), Style.FILL, Radius(16f), true)
 
     val sector = Sector()
     var angle = Angle()
@@ -38,8 +36,6 @@ class Hand(
             val sweepHalf = sweepAngle / 2f
             sector.start = value - sweepHalf
             sector.end = value + sweepAngle - sweepHalf
-
-            bubble.point.angle = angle
         }
 
     fun startAnimation() {
@@ -47,45 +43,31 @@ class Hand(
             addUpdateListener(createParticlesMovementUpdater(radius))
             repeatCount = ValueAnimator.INFINITE
             interpolator = LinearInterpolator()
-            duration = 2000
+            duration = 1000
         }.start()
     }
 
     fun draw(canvas: Canvas, paint: Paint) {
         if (angle.isInitialized()) {
-            polarPoint.angle = angle
-            polarPoint.radius = radius
-            polarPoint.toCartesian(cartesianPoint)
-
-            canvas.drawLine(
-                0f, 0f,
-                cartesianPoint.x,
-                cartesianPoint.y,
-                paint
-            )
-            bubble.draw(canvas, this.paint)
+            val count = canvas.save()
+            canvas.rotate(angle.angle)
+            bubbles.forEach { canvas.drawCircle(it.x, it.y, 20f, paint) }
+            canvas.restoreToCount(count)
         }
     }
 
     private fun createParticlesMovementUpdater(
         maxRadius: Radius
     ): ValueAnimator.AnimatorUpdateListener {
-        return object : ValueAnimator.AnimatorUpdateListener {
-            var previous = 0f
-            override fun onAnimationUpdate(animation: ValueAnimator) {
-                val animatedValue = animation.animatedValue as Float
-                val value = abs(animatedValue - previous) % radius.value
-                previous = animatedValue
-                val point = bubble.point
-                val radius = point.radius
-                var newRadius = radius + value
-
-                if (newRadius > maxRadius) {
-                    newRadius = Radius(0f)
-                }
-                point.radius = newRadius
-                clock.invalidate()
+        return ValueAnimator.AnimatorUpdateListener {
+            for (bubble in bubbles) {
+                bubble.x = (bubble.x + 1) % maxRadius.value
             }
+            clock.invalidate()
         }
+    }
+
+    companion object {
+        const val PARTICLE_COUNT = 80
     }
 }
