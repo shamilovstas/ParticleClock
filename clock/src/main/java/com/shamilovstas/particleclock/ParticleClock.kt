@@ -107,7 +107,6 @@ class ParticleClock @JvmOverloads constructor(
         val cy = h / 2
         center = CartesianPoint(cx, cy)
         clockRadius = Radius(min(cx, cy) - 40f)
-        Log.d("Radius", "onSizeChanged: $clockRadius")
         particlesHolder.init(clockRadius)
     }
     // endregion
