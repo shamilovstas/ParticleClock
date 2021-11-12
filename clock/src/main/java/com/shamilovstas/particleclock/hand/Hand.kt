@@ -15,8 +15,7 @@ import kotlin.random.Random
 
 class Hand(
     val radius: Radius = Radius(0f),
-    var sweepAngle: Angle = Angle(10f),
-    val clock: ParticleClock
+    var sweepAngle: Angle = Angle(10f)
 ) {
 
     val bubbles = mutableListOf<CartesianPoint>()
@@ -38,9 +37,9 @@ class Hand(
             sector.end = value + sweepAngle - sweepHalf
         }
 
-    fun startAnimation() {
+    fun startAnimation(invalidationCallback: () -> Unit) {
         animateFloat(0f to radius.value) {
-            addUpdateListener(createParticlesMovementUpdater(radius))
+            addUpdateListener(createParticlesMovementUpdater(radius, invalidationCallback))
             repeatCount = ValueAnimator.INFINITE
             interpolator = LinearInterpolator()
             duration = 1000
@@ -57,13 +56,14 @@ class Hand(
     }
 
     private fun createParticlesMovementUpdater(
-        maxRadius: Radius
+        maxRadius: Radius,
+        callback: () -> Unit
     ): ValueAnimator.AnimatorUpdateListener {
         return ValueAnimator.AnimatorUpdateListener {
             for (bubble in bubbles) {
                 bubble.x = (bubble.x + 1) % maxRadius.value
             }
-            clock.invalidate()
+            callback.invoke()
         }
     }
 

@@ -71,8 +71,8 @@ class ParticleClock @JvmOverloads constructor(
     // endregion
     // region Objects
     var secondsHandAngle = Angle()
-    var minutesHand = Hand(radius = Radius(600f), clock = this)
-    var hoursHand = Hand(radius = Radius(400f), clock = this)
+    var minutesHand = Hand(radius = Radius(600f))
+    var hoursHand = Hand(radius = Radius(400f))
 
     var possibleAngleRange: List<Int> = listOf()
 
@@ -259,8 +259,8 @@ class ParticleClock @JvmOverloads constructor(
     override fun surfaceCreated(holder: SurfaceHolder) {
         drawingThread = DrawingThread(getHolder(), this)
         drawingThread.start()
-        hoursHand.startAnimation()
-        minutesHand.startAnimation()
+        hoursHand.startAnimation { invalidate() }
+        minutesHand.startAnimation { invalidate() }
     }
 
     override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
