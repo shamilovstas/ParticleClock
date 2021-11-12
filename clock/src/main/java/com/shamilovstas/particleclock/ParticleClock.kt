@@ -275,36 +275,28 @@ class ParticleClock @JvmOverloads constructor(
         maxRadius: Radius,
         kind: MovementType
     ): ValueAnimator.AnimatorUpdateListener {
-        return object : ValueAnimator.AnimatorUpdateListener {
-            var previous = 0
-            override fun onAnimationUpdate(animation: ValueAnimator) {
-                val animatedValue = animation.animatedValue as Int
-                val value = animatedValue - previous
-                previous = animatedValue
-                for (bubble in particlesHolder.bubbles) {
+        return ValueAnimator.AnimatorUpdateListener {
+            for (bubble in particlesHolder.bubbles) {
 
-                    if (kind == MovementType.LINEAR && bubble.autoMove) {
-                        continue
-                    }
-                    val point = bubble.point
-                    val radius = point.radius
-                    var newRadius = radius + value.toFloat()
-
-                    if (newRadius > maxRadius) {
-                        newRadius = Radius(BUBBLE_SPAWN_CENTER_MARGIN)
-                        val angle = possibleAngleRange.random() + Random.nextFloat(-1f, +1f)
-                        point.angle = Angle(abs(angle) % 360)
-                    }
-                    point.radius = newRadius
-
-                    val sizeMultiplier = particlesHolder.getDistancePercent(
-                        newRadius - BUBBLE_SPAWN_CENTER_MARGIN,
-                        maxRadius - BUBBLE_SPAWN_CENTER_MARGIN
-                    )
-                    bubble.setRadiusMultiplier(sizeMultiplier)
+                if (kind == MovementType.LINEAR && bubble.autoMove) {
+                    continue
                 }
-                invalidate()
+                val point = bubble.point
+                val radius = point.radius
+                val nextRadius = radius + 1f
+                point.radius = if (nextRadius > maxRadius) {
+                    val angle = possibleAngleRange.random() + Random.nextFloat(-1f, +1f)
+                    point.angle = Angle(abs(angle) % 360)
+                    Radius(BUBBLE_SPAWN_CENTER_MARGIN)
+                } else nextRadius
+
+                val sizeMultiplier = particlesHolder.getDistancePercent(
+                    point.radius - BUBBLE_SPAWN_CENTER_MARGIN,
+                    maxRadius - BUBBLE_SPAWN_CENTER_MARGIN
+                )
+                bubble.setRadiusMultiplier(sizeMultiplier)
             }
+            invalidate()
         }
     }
 
