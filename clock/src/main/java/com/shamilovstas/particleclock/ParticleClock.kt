@@ -157,7 +157,7 @@ class ParticleClock @JvmOverloads constructor(
         TemporaryHolders.refresh()
         // endregion
 
-        particlesHolder.bubbles.forEach { it.draw(canvas, bubblePaint) }
+        particlesHolder.particles.forEach { it.draw(canvas, bubblePaint) }
     }
 
     fun setTime(localDate: LocalTime) {
@@ -262,7 +262,7 @@ class ParticleClock @JvmOverloads constructor(
     private fun createParticlesMovementUpdater(
         maxRadius: Radius,
     ) {
-        for (bubble in particlesHolder.bubbles) {
+        for (bubble in particlesHolder.particles) {
 
             val point = bubble.point
             val radius = point.radius

@@ -5,7 +5,7 @@ import android.graphics.Paint
 import kotlin.math.sin
 import kotlin.random.Random
 
-class Bubble(
+class Particle(
     val coordinateCenter: CartesianPoint = CartesianPoint(),
     val point: PolarPoint,
     val style: Style,

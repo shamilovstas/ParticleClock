@@ -12,7 +12,7 @@ class Hand(
     var sweepAngle: Angle = Angle(10f)
 ) {
 
-    private val bubbles = mutableListOf<Bubble>()
+    private val particles = mutableListOf<Particle>()
 
     init {
         repeat(PARTICLE_COUNT) {
@@ -20,13 +20,13 @@ class Hand(
             val deviation = Random.nextFloat(-DEVIATION, DEVIATION)
             val style = if (Random.nextBoolean()) Style.FILL else Style.STROKE
             val coordinateCenter = CartesianPoint(y = deviation)
-            val bubble = Bubble(
+            val particle = Particle(
                 coordinateCenter = coordinateCenter,
                 point = PolarPoint(radius = Radius(radius)),
                 style = style,
                 radius = Radius(20f)
             )
-            bubbles.add(bubble)
+            particles.add(particle)
         }
     }
 
@@ -51,7 +51,7 @@ class Hand(
         if (angle.isInitialized()) {
             val count = canvas.save()
             canvas.rotate(angle.angle)
-            bubbles.forEach {
+            particles.forEach {
                 it.draw(canvas, paint)
             }
             canvas.restoreToCount(count)
@@ -62,7 +62,7 @@ class Hand(
         maxRadius: Radius,
         callback: () -> Unit
     ) {
-        for (bubble in bubbles) {
+        for (bubble in particles) {
             val newRadius = (bubble.point.radius.value + 1) % maxRadius.value
             bubble.point.radius = Radius(newRadius)
         }

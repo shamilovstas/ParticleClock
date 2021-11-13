@@ -1,14 +1,14 @@
 package com.shamilovstas.particleclock
 
-import com.shamilovstas.particleclock.Bubble.Companion.INITIAL_RADIUS
+import com.shamilovstas.particleclock.Particle.Companion.INITIAL_RADIUS
 import kotlin.random.Random
 
 class ParticlesHolder {
 
-    val bubbles = mutableListOf<Bubble>()
+    val particles = mutableListOf<Particle>()
 
     fun init(radius: Radius) {
-        bubbles.clear()
+        particles.clear()
 
         val minDistance = Radius(ParticleClock.BUBBLE_SPAWN_CENTER_MARGIN)
         val maxDistance: Radius = radius - ParticleClock.OUTER_SECONDS_TRACK_MARGIN
@@ -24,19 +24,19 @@ class ParticlesHolder {
 
 
             point.angle = Angle(randomAngle)
-            val bubble =
-                Bubble(point = point, style = style, radius = bubbleRadius)
+            val particle =
+                Particle(point = point, style = style, radius = bubbleRadius)
 
 
             val start = distanceFromCenter - ParticleClock.BUBBLE_SPAWN_CENTER_MARGIN
 
-            bubble.setRadiusMultiplier(
+            particle.setRadiusMultiplier(
                 getDistancePercent(
                     start,
                     maxDistance - ParticleClock.BUBBLE_SPAWN_CENTER_MARGIN
                 )
             )
-            bubbles.add(bubble)
+            particles.add(particle)
         }
     }
 
