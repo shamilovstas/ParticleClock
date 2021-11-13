@@ -1,15 +1,9 @@
 package com.shamilovstas.particleclock.hand
 
-import android.animation.ValueAnimator
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
-import android.util.Log
 import android.view.animation.LinearInterpolator
 import com.shamilovstas.particleclock.*
-import com.shamilovstas.particleclock.ParticleClock.TemporaryHolders.cartesianPoint
-import com.shamilovstas.particleclock.ParticleClock.TemporaryHolders.polarPoint
-import kotlin.math.abs
 import kotlin.random.Random
 
 
@@ -18,12 +12,12 @@ class Hand(
     var sweepAngle: Angle = Angle(10f)
 ) {
 
-    val bubbles = mutableListOf<CartesianPoint>()
+    private val bubbles = mutableListOf<CartesianPoint>()
 
     init {
         repeat(PARTICLE_COUNT) {
             val x = Random.nextFloat(0f, radius.value)
-            val y = Random.nextFloat(-10f, 10f)
+            val y = Random.nextFloat(-DEVIATION, DEVIATION)
             bubbles.add(CartesianPoint(x = x, y = y))
         }
     }
@@ -38,12 +32,11 @@ class Hand(
         }
 
     fun startAnimation(invalidationCallback: () -> Unit) {
-        animateFloat(0f to radius.value) {
-            addUpdateListener(createParticlesMovementUpdater(radius, invalidationCallback))
-            repeatCount = ValueAnimator.INFINITE
-            interpolator = LinearInterpolator()
-            duration = 1000
-        }.start()
+        infiniteAnimator(
+            speed = 100,
+            interpolator = LinearInterpolator(),
+            onAnimationUpdate = { createParticlesMovementUpdater(radius, invalidationCallback) }
+        ).start()
     }
 
     fun draw(canvas: Canvas, paint: Paint) {
@@ -58,16 +51,15 @@ class Hand(
     private fun createParticlesMovementUpdater(
         maxRadius: Radius,
         callback: () -> Unit
-    ): ValueAnimator.AnimatorUpdateListener {
-        return ValueAnimator.AnimatorUpdateListener {
-            for (bubble in bubbles) {
-                bubble.x = (bubble.x + 1) % maxRadius.value
-            }
-            callback.invoke()
+    ) {
+        for (bubble in bubbles) {
+            bubble.x = (bubble.x + 1) % maxRadius.value
         }
+        callback.invoke()
     }
 
     companion object {
         const val PARTICLE_COUNT = 80
+        private const val DEVIATION = 10f
     }
 }
