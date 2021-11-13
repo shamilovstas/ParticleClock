@@ -273,9 +273,9 @@ class ParticleClock @JvmOverloads constructor(
                 Radius(BUBBLE_SPAWN_CENTER_MARGIN)
             } else nextRadius
 
-            val sizeMultiplier = particlesHolder.getDistancePercent(
-                point.radius - BUBBLE_SPAWN_CENTER_MARGIN,
-                maxRadius - BUBBLE_SPAWN_CENTER_MARGIN
+            val sizeMultiplier = getFraction(
+                point.radius.value - BUBBLE_SPAWN_CENTER_MARGIN,
+                maxRadius.value - BUBBLE_SPAWN_CENTER_MARGIN
             )
             bubble.setRadiusMultiplier(sizeMultiplier)
         }

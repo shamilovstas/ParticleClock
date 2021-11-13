@@ -31,18 +31,13 @@ class ParticlesHolder {
             val start = distanceFromCenter - ParticleClock.BUBBLE_SPAWN_CENTER_MARGIN
 
             particle.setRadiusMultiplier(
-                getDistancePercent(
-                    start,
-                    maxDistance - ParticleClock.BUBBLE_SPAWN_CENTER_MARGIN
+                getFraction(
+                    start.value,
+                    maxDistance.value - ParticleClock.BUBBLE_SPAWN_CENTER_MARGIN
                 )
             )
             particles.add(particle)
         }
-    }
-
-    fun getDistancePercent(start: Radius, end: Radius): Double {
-        require(start <= end)
-        return 1.0 - (start / end).value;
     }
 
     companion object {
