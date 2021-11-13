@@ -6,6 +6,7 @@ import kotlin.math.sin
 import kotlin.random.Random
 
 class Bubble(
+    val coordinateCenter: CartesianPoint = CartesianPoint(),
     val point: PolarPoint,
     val style: Style,
     var radius: Radius
@@ -17,15 +18,16 @@ class Bubble(
         const val INITIAL_RADIUS = 10f
     }
 
-    val cartesianPoint: CartesianPoint = point.toCartesian()
-
     fun draw(canvas: Canvas, paint: Paint) {
         paint.style = when (style) {
             Style.FILL -> Paint.Style.FILL
             Style.STROKE -> Paint.Style.STROKE
         }
         paint.alpha = alpha
-        point.drawCircle(canvas, paint, radius, cartesianPoint)
+        val count = canvas.save()
+        canvas.rotate(point.angle.angle)
+        canvas.drawCircle(point.radius.value, coordinateCenter.y, radius.value, paint)
+        canvas.restoreToCount(count)
     }
 
     fun setRadiusMultiplier(multiplier: Double) {
