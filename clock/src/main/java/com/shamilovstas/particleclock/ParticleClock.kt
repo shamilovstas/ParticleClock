@@ -277,7 +277,7 @@ class ParticleClock @JvmOverloads constructor(
                 point.radius.value - BUBBLE_SPAWN_CENTER_MARGIN,
                 maxRadius.value - BUBBLE_SPAWN_CENTER_MARGIN
             )
-            bubble.setRadiusMultiplier(sizeMultiplier)
+            bubble.setDistanceMultiplier(sizeMultiplier)
         }
         invalidate()
     }

@@ -12,11 +12,8 @@ class Particle(
     var radius: Radius
 ) {
 
+    private val initialRadius = radius
     private var alpha: Int = 255
-
-    companion object {
-        const val INITIAL_RADIUS = 10f
-    }
 
     fun draw(canvas: Canvas, paint: Paint) {
         paint.style = when (style) {
@@ -30,9 +27,10 @@ class Particle(
         canvas.restoreToCount(count)
     }
 
-    fun setRadiusMultiplier(multiplier: Double) {
-        this.alpha = (sin(multiplier * Math.PI) * 255f).toInt()
-        this.radius = Radius(INITIAL_RADIUS * sin(multiplier * Math.PI).toFloat())
+    fun setDistanceMultiplier(multiplier: Double) {
+        val sin = sin(multiplier * Math.PI)
+        this.alpha = (sin * 255f).toInt()
+        this.radius = Radius(initialRadius.value * sin.toFloat())
     }
 }
 
