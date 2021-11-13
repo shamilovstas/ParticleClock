@@ -8,8 +8,7 @@ import kotlin.random.Random
 class Bubble(
     val point: PolarPoint,
     val style: Style,
-    var radius: Radius,
-    val autoMove: Boolean
+    var radius: Radius
 ) {
 
     private var alpha: Int = 255

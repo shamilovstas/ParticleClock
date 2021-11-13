@@ -25,7 +25,7 @@ class ParticlesHolder {
 
             point.angle = Angle(randomAngle)
             val bubble =
-                Bubble(style = style, point = point, radius = bubbleRadius, autoMove = autoMove)
+                Bubble(point = point, style = style, radius = bubbleRadius)
 
 
             val start = distanceFromCenter - ParticleClock.BUBBLE_SPAWN_CENTER_MARGIN

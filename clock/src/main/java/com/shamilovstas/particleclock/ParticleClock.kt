@@ -118,27 +118,15 @@ class ParticleClock @JvmOverloads constructor(
     private fun pulse(): Animator {
         val maxRadius = clockRadius - OUTER_SECONDS_TRACK_MARGIN
         val pulseAnimator = ValueAnimator.ofInt(0, 25)
-        val linearAnimator = ValueAnimator.ofInt(0, 70)
-        linearAnimator.duration = 1000
         pulseAnimator.duration = 300
 
-        linearAnimator.interpolator = LinearInterpolator()
         pulseAnimator.interpolator = AccelerateDecelerateInterpolator()
 
-        pulseAnimator.addUpdateListener(
-            createParticlesMovementUpdater(
-                maxRadius,
-                MovementType.PULSE
-            )
-        )
-        linearAnimator.addUpdateListener(
-            createParticlesMovementUpdater(
-                maxRadius,
-                MovementType.LINEAR
-            )
-        )
+        pulseAnimator.addUpdateListener {
+            createParticlesMovementUpdater(maxRadius)
+        }
         val animatorSet = AnimatorSet()
-        animatorSet.playTogether(linearAnimator, pulseAnimator)
+        animatorSet.playTogether(pulseAnimator)
         return animatorSet
     }
 
@@ -248,7 +236,8 @@ class ParticleClock @JvmOverloads constructor(
     }
 
     private fun setHourHandAngle(hour: Int, minute: Int, seconds: Int) {
-        hoursHand.angle = analogClockGeometry.hourToAngle(Hour(hour), Minute(minute), Second(seconds))
+        hoursHand.angle =
+            analogClockGeometry.hourToAngle(Hour(hour), Minute(minute), Second(seconds))
     }
 
     private fun setMinuteHandAngle(minute: Int, seconds: Int) {
@@ -260,6 +249,7 @@ class ParticleClock @JvmOverloads constructor(
         drawingThread.start()
         hoursHand.startAnimation { invalidate() }
         minutesHand.startAnimation { invalidate() }
+        startLinearBackgroundParticles()
     }
 
     override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
@@ -272,35 +262,33 @@ class ParticleClock @JvmOverloads constructor(
     // This method might be the source of the occasional native crashes
     private fun createParticlesMovementUpdater(
         maxRadius: Radius,
-        kind: MovementType
-    ): ValueAnimator.AnimatorUpdateListener {
-        return ValueAnimator.AnimatorUpdateListener {
-            for (bubble in particlesHolder.bubbles) {
+    ) {
+        for (bubble in particlesHolder.bubbles) {
 
-                if (kind == MovementType.LINEAR && bubble.autoMove) {
-                    continue
-                }
-                val point = bubble.point
-                val radius = point.radius
-                val nextRadius = radius + 1f
-                point.radius = if (nextRadius > maxRadius) {
-                    val angle = possibleAngleRange.random() + Random.nextFloat(-1f, +1f)
-                    point.angle = Angle(abs(angle) % 360)
-                    Radius(BUBBLE_SPAWN_CENTER_MARGIN)
-                } else nextRadius
+            val point = bubble.point
+            val radius = point.radius
+            val nextRadius = radius + 1f
+            point.radius = if (nextRadius > maxRadius) {
+                val angle = possibleAngleRange.random() + Random.nextFloat(-1f, +1f)
+                point.angle = Angle(abs(angle) % 360)
+                Radius(BUBBLE_SPAWN_CENTER_MARGIN)
+            } else nextRadius
 
-                val sizeMultiplier = particlesHolder.getDistancePercent(
-                    point.radius - BUBBLE_SPAWN_CENTER_MARGIN,
-                    maxRadius - BUBBLE_SPAWN_CENTER_MARGIN
-                )
-                bubble.setRadiusMultiplier(sizeMultiplier)
-            }
-            invalidate()
+            val sizeMultiplier = particlesHolder.getDistancePercent(
+                point.radius - BUBBLE_SPAWN_CENTER_MARGIN,
+                maxRadius - BUBBLE_SPAWN_CENTER_MARGIN
+            )
+            bubble.setRadiusMultiplier(sizeMultiplier)
         }
+        invalidate()
     }
 
-    enum class MovementType {
-        PULSE, LINEAR
+    private fun startLinearBackgroundParticles() {
+        // speed: 100px per second
+        val animator = infiniteAnimator(100, LinearInterpolator()) {
+            createParticlesMovementUpdater(clockRadius - OUTER_SECONDS_TRACK_MARGIN)
+        }
+        animator.start()
     }
 
     companion object {

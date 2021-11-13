@@ -2,6 +2,8 @@ package com.shamilovstas.particleclock
 
 import android.animation.Animator
 import android.animation.ValueAnimator
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.Interpolator
 
 fun animateFloat(pair: Pair<Float, Float>, block: ValueAnimator.() -> Unit): ValueAnimator {
     val animator = ValueAnimator.ofFloat(pair.first, pair.second)
@@ -17,6 +19,23 @@ fun animateInt(pair: Pair<Int, Int>, block: ValueAnimator.() -> Unit): ValueAnim
     val animator = ValueAnimator.ofInt(pair.first, pair.second)
     block(animator)
     return animator
+}
+
+fun infiniteAnimator(
+    speed: Int,
+    interpolator: Interpolator = AccelerateDecelerateInterpolator(),
+    onAnimationUpdate: () -> Unit,
+): Animator {
+    val animator = ValueAnimator.ofInt(0, speed).apply {
+        duration = 1000
+        this.interpolator = interpolator
+        repeatCount = ValueAnimator.INFINITE
+        addUpdateListener {
+            onAnimationUpdate()
+        }
+    }
+    return animator
+
 }
 
 fun animationAdapter(
