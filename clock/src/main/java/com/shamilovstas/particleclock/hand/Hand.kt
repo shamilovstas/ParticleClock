@@ -65,6 +65,12 @@ class Hand(
         for (bubble in particles) {
             val newRadius = (bubble.point.radius.value + 1) % maxRadius.value
             bubble.point.radius = Radius(newRadius)
+            bubble.setDistanceMultiplier(
+                getFraction(
+                    bubble.point.radius.value,
+                    radius.value
+                )
+            )
         }
         callback.invoke()
     }
