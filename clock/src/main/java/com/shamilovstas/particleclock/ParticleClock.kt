@@ -37,6 +37,11 @@ class ParticleClock @JvmOverloads constructor(
     private var color: Int = Color.WHITE
 
     // region Paints
+    val particlesPaint = Paint().apply {
+        this.color = Color.BLUE
+        this.strokeWidth = 4f
+    }
+
     val hourPaint = Paint().apply {
         this.color = Color.BLUE
         this.strokeWidth = 10.0f
@@ -151,13 +156,13 @@ class ParticleClock @JvmOverloads constructor(
         )
         TemporaryHolders.refresh()
 
-        minutesHand.draw(canvas, minutePaint)
+        minutesHand.draw(canvas, particlesPaint)
         TemporaryHolders.refresh()
-        hoursHand.draw(canvas, hourPaint)
+        hoursHand.draw(canvas, particlesPaint)
         TemporaryHolders.refresh()
         // endregion
 
-        particlesHolder.particles.forEach { it.draw(canvas, bubblePaint) }
+        particlesHolder.particles.forEach { it.draw(canvas, particlesPaint) }
     }
 
     fun setTime(localDate: LocalTime) {
@@ -262,6 +267,7 @@ class ParticleClock @JvmOverloads constructor(
     private fun createParticlesMovementUpdater(
         maxRadius: Radius,
     ) {
+        if (possibleAngleRange.isEmpty()) return //TODO figure out how to start animation only after time is set
         for (bubble in particlesHolder.particles) {
 
             val point = bubble.point
