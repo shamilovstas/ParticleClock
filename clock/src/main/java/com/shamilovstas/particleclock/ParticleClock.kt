@@ -8,7 +8,6 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
-import android.util.Log
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.view.animation.AccelerateDecelerateInterpolator
@@ -115,7 +114,7 @@ class ParticleClock @JvmOverloads constructor(
         this.color = color
     }
 
-    private fun pulse(): Animator {
+    private fun backgroundParticlesPulse(): Animator {
         val maxRadius = clockRadius - OUTER_SECONDS_TRACK_MARGIN
         val pulseAnimator = ValueAnimator.ofInt(0, 25)
         pulseAnimator.duration = 300
@@ -165,7 +164,7 @@ class ParticleClock @JvmOverloads constructor(
         val hours = localDate.get(ChronoField.HOUR_OF_AMPM)
         val seconds = localDate.get(ChronoField.SECOND_OF_MINUTE)
         val minutes = localDate.get(ChronoField.MINUTE_OF_HOUR)
-        runSecondsTrackAnimation(seconds)
+        runSecondsAnimation(seconds)
         setMinuteHandAngle(minutes, seconds)
         setHourHandAngle(hours, minutes, seconds)
 
@@ -211,7 +210,7 @@ class ParticleClock @JvmOverloads constructor(
         }
     }
 
-    private fun runSecondsTrackAnimation(seconds: Int) {
+    private fun runSecondsAnimation(seconds: Int) {
 
         var angle = analogClockGeometry.secondsToAngle(Second(seconds))
         if (secondsHandAngle.isInitialized().not()) {
@@ -230,7 +229,7 @@ class ParticleClock @JvmOverloads constructor(
                 }))
             }
             val animator = AnimatorSet()
-            animator.playTogether(secondsAnimation, pulse())
+            animator.playTogether(secondsAnimation, backgroundParticlesPulse())
             animator.start()
         }
     }
