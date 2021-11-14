@@ -1,5 +1,6 @@
 package com.shamilovstas.particleclock
 
+import kotlin.math.sin
 import kotlin.random.Random
 
 class ParticlesHolder {
@@ -29,12 +30,13 @@ class ParticlesHolder {
 
             val start = distanceFromCenter - ParticleClock.BUBBLE_SPAWN_CENTER_MARGIN
 
-            particle.setDistanceMultiplier(
-                getFraction(
+                val multiplier = getFraction(
                     start.value,
                     maxDistance.value - ParticleClock.BUBBLE_SPAWN_CENTER_MARGIN
                 )
-            )
+            val sin = sin(multiplier * Math.PI)
+            particle.alpha = (sin * 255f).toInt()
+            particle.radius = Radius(particle.initialRadius.value * sin.toFloat())
             particles.add(particle)
         }
     }

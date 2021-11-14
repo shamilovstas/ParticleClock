@@ -4,6 +4,8 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.view.animation.LinearInterpolator
 import com.shamilovstas.particleclock.*
+import kotlin.math.roundToInt
+import kotlin.math.sin
 import kotlin.random.Random
 
 
@@ -65,18 +67,17 @@ class Hand(
         for (bubble in particles) {
             val newRadius = (bubble.point.radius.value + 1) % maxRadius.value
             bubble.point.radius = Radius(newRadius)
-            bubble.setDistanceMultiplier(
-                getFraction(
-                    bubble.point.radius.value,
-                    radius.value
-                )
-            )
+            val distanceFraction = getFraction(bubble.point.radius.value, radius.value)
+            val radiusMultiplier = if (distanceFraction > 0.5) 0.5 else distanceFraction
+            val sin = sin(radiusMultiplier * Math.PI)
+            bubble.radius = Radius(bubble.initialRadius.value * sin.toFloat())
+            bubble.alpha = (sin(distanceFraction * Math.PI) * 255).roundToInt()
         }
         callback.invoke()
     }
 
     companion object {
-        const val PARTICLE_COUNT = 80
+        const val PARTICLE_COUNT = 60
         private const val DEVIATION = 10f
     }
 }

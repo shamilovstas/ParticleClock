@@ -4,7 +4,6 @@ import com.shamilovstas.particleclock.Angle
 import com.shamilovstas.particleclock.CartesianPoint
 import com.shamilovstas.particleclock.PolarPoint
 import com.shamilovstas.particleclock.Radius
-import org.junit.Assert
 import org.junit.Assert.*
 import org.junit.Test
 

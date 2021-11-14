@@ -17,6 +17,7 @@ import java.time.LocalTime
 import java.time.temporal.ChronoField
 import kotlin.math.abs
 import kotlin.math.min
+import kotlin.math.sin
 import kotlin.properties.Delegates
 import kotlin.random.Random
 
@@ -283,7 +284,9 @@ class ParticleClock @JvmOverloads constructor(
                 point.radius.value - BUBBLE_SPAWN_CENTER_MARGIN,
                 maxRadius.value - BUBBLE_SPAWN_CENTER_MARGIN
             )
-            bubble.setDistanceMultiplier(sizeMultiplier)
+            val sin = sin(sizeMultiplier * Math.PI)
+            bubble.alpha = (sin * 255f).toInt()
+            bubble.radius = Radius(bubble.initialRadius.value * sin.toFloat())
         }
         invalidate()
     }

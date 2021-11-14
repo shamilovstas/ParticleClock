@@ -1,8 +1,6 @@
 package com.shamilovstas.particleclock
 
-import android.util.Log
 import kotlin.math.max
-import kotlin.math.min
 
 @JvmInline
 value class Radius(val value: Float = 0f) {

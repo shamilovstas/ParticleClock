@@ -3,7 +3,6 @@ package com.shamilovstas.particleclock
 import android.graphics.Canvas
 import android.graphics.Paint
 import kotlin.math.sin
-import kotlin.random.Random
 
 class Particle(
     val coordinateCenter: CartesianPoint = CartesianPoint(),
@@ -12,8 +11,8 @@ class Particle(
     var radius: Radius
 ) {
 
-    private val initialRadius = radius
-    private var alpha: Int = 255
+    val initialRadius = radius
+    var alpha: Int = 255
 
     fun draw(canvas: Canvas, paint: Paint) {
         paint.style = when (style) {
@@ -25,12 +24,6 @@ class Particle(
         canvas.rotate(point.angle.angle)
         canvas.drawCircle(point.radius.value, coordinateCenter.y, radius.value, paint)
         canvas.restoreToCount(count)
-    }
-
-    fun setDistanceMultiplier(multiplier: Double) {
-        val sin = sin(multiplier * Math.PI)
-        this.alpha = (sin * 255f).toInt()
-        this.radius = Radius(initialRadius.value * sin.toFloat())
     }
 }
 

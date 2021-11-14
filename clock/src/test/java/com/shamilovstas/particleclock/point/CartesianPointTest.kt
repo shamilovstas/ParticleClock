@@ -1,7 +1,6 @@
 package com.shamilovstas.particleclock.point
 
 import com.shamilovstas.particleclock.*
-import org.junit.Assert
 import org.junit.Assert.*
 import org.junit.Test
 
