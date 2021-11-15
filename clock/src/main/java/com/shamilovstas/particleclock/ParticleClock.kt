@@ -151,26 +151,21 @@ class ParticleClock @JvmOverloads constructor(
     private fun drawMinutesIndicators(canvas: Canvas) {
         for (minute in 0 until MINUTES_IN_HOUR) {
             val angle = Angle((minute * DEGREE_PER_SEGMENT).toFloat())
-            TemporaryHolders.polarPoint.also {
+            val indicatorCoordinate = TemporaryHolders.polarPoint.also {
                 it.radius = clockRadius
                 it.angle = angle
-            }.run { toCartesian(TemporaryHolders.cartesianPoint) }
-            val point = TemporaryHolders.cartesianPoint
+            }
             val isHour = analogClockGeometry.isSectorStart(Minute(minute))
-
             val radius = if (isHour) 20f else 10f
             val paint = if (isHour) hourPaint else minutePaint
-            val indicator = TemporaryHolders.circle
-            indicator.center.copyFrom(point)
-            indicator.radius = Radius(radius)
-            indicator.init(canvas, paint)
+            indicatorCoordinate.drawCircle(Radius(radius), canvas, paint)
         }
     }
 
     private fun drawSecondsTrack(canvas: Canvas, radius: Radius, indicatorAngle: Angle) {
         val circle = TemporaryHolders.circle
         circle.radius = radius
-        circle.init(canvas, secondsTrackPaint)
+        circle.draw(canvas, secondsTrackPaint)
 
         if (secondsHandAngle.isInitialized()) {
             val angle = secondsHandAngle - indicatorAngle / 2f
