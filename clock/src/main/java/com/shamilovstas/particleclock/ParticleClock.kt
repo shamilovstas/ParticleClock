@@ -1,23 +1,17 @@
 package com.shamilovstas.particleclock
 
-import android.animation.Animator
 import android.animation.AnimatorSet
-import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
-import android.view.animation.AccelerateDecelerateInterpolator
-import android.view.animation.LinearInterpolator
+import com.shamilovstas.particleclock.background.ParticlesBackground
 import com.shamilovstas.particleclock.hand.Hand
 import java.time.LocalTime
 import java.time.temporal.ChronoField
-import kotlin.math.abs
 import kotlin.math.min
-import kotlin.math.sin
-import kotlin.random.Random
 
 class ParticleClock @JvmOverloads constructor(
     context: Context,
@@ -27,15 +21,14 @@ class ParticleClock @JvmOverloads constructor(
 ) : View(context, attributeSet, defStyleAttr, defStyleRes) {
 
     private var isInitialized = false
-    private val particlesHolder = ParticlesHolder()
-
     // region Paints
+
+
     val particlesPaint = Paint().apply {
         this.color = Color.BLUE
         this.isAntiAlias = true
         this.strokeWidth = 2f
     }
-
     val hourPaint = Paint().apply {
         this.color = Color.BLUE
         this.strokeWidth = 10.0f
@@ -65,13 +58,16 @@ class ParticleClock @JvmOverloads constructor(
         strokeCap = Paint.Cap.ROUND
     }
 
+    private val particlesBackground =
+        ParticlesBackground(true) { this.invalidate() }
+
+
     // endregion
     // region Objects
     var secondsHandAngle = Angle()
     var minutesHand = Hand(radius = Radius(600f))
     var hoursHand = Hand(radius = Radius(400f))
 
-    var possibleAngleRange: List<Int> = listOf()
 
     var clockRadius: Radius = Radius()
     var center: CartesianPoint = CartesianPoint()
@@ -104,24 +100,9 @@ class ParticleClock @JvmOverloads constructor(
         val cy = h / 2
         center = CartesianPoint(cx, cy)
         clockRadius = Radius(min(cx, cy) - 40f)
-        particlesHolder.init(clockRadius)
+        particlesBackground.radius = clockRadius
     }
     // endregion
-
-    private fun backgroundParticlesPulse(): Animator {
-        val maxRadius = clockRadius - OUTER_SECONDS_TRACK_MARGIN
-        val pulseAnimator = ValueAnimator.ofInt(0, 25)
-        pulseAnimator.duration = 300
-
-        pulseAnimator.interpolator = AccelerateDecelerateInterpolator()
-
-        pulseAnimator.addUpdateListener {
-            createParticlesMovementUpdater(maxRadius)
-        }
-        val animatorSet = AnimatorSet()
-        animatorSet.playTogether(pulseAnimator)
-        return animatorSet
-    }
 
     override fun draw(canvas: Canvas) {
         super.draw(canvas)
@@ -149,8 +130,7 @@ class ParticleClock @JvmOverloads constructor(
         hoursHand.draw(canvas, particlesPaint)
         TemporaryHolders.refresh()
         // endregion
-
-        particlesHolder.particles.forEach { it.draw(canvas, particlesPaint) }
+        particlesBackground.draw(canvas, particlesPaint)
     }
 
     fun setTime(localDate: LocalTime) {
@@ -163,7 +143,7 @@ class ParticleClock @JvmOverloads constructor(
 
         val minuteHandAngleRange = minutesHand.sector.asRange()
         val hourHandAngleRange = hoursHand.sector.asRange()
-        possibleAngleRange = (0..360) - minuteHandAngleRange - hourHandAngleRange
+        particlesBackground.allowedAngles = (0..360) - minuteHandAngleRange - hourHandAngleRange
         init()
         invalidate()
     }
@@ -183,14 +163,14 @@ class ParticleClock @JvmOverloads constructor(
             val indicator = TemporaryHolders.circle
             indicator.center.copyFrom(point)
             indicator.radius = Radius(radius)
-            indicator.draw(canvas, paint)
+            indicator.init(canvas, paint)
         }
     }
 
     private fun drawSecondsTrack(canvas: Canvas, radius: Radius, indicatorAngle: Angle) {
         val circle = TemporaryHolders.circle
         circle.radius = radius
-        circle.draw(canvas, secondsTrackPaint)
+        circle.init(canvas, secondsTrackPaint)
 
         if (secondsHandAngle.isInitialized()) {
             val angle = secondsHandAngle - indicatorAngle / 2f
@@ -222,7 +202,7 @@ class ParticleClock @JvmOverloads constructor(
                 }))
             }
             val animator = AnimatorSet()
-            animator.playTogether(secondsAnimation, backgroundParticlesPulse())
+            animator.playTogether(secondsAnimation, particlesBackground.backgroundParticlesPulse())
             animator.start()
         }
     }
@@ -241,42 +221,10 @@ class ParticleClock @JvmOverloads constructor(
             isInitialized = true
             hoursHand.startAnimation { invalidate() }
             minutesHand.startAnimation { invalidate() }
-            startLinearBackgroundParticles()
+            particlesBackground.startAnimation()
         }
     }
 
-    private fun createParticlesMovementUpdater(
-        maxRadius: Radius,
-    ) {
-        for (bubble in particlesHolder.particles) {
-
-            val point = bubble.point
-            val radius = point.radius
-            val nextRadius = radius + 1f
-            point.radius = if (nextRadius > maxRadius) {
-                val angle = possibleAngleRange.random() + Random.nextFloat(-1f, +1f)
-                point.angle = Angle(abs(angle) % 360)
-                Radius(BUBBLE_SPAWN_CENTER_MARGIN)
-            } else nextRadius
-
-            val sizeMultiplier = getFraction(
-                point.radius.value - BUBBLE_SPAWN_CENTER_MARGIN,
-                maxRadius.value - BUBBLE_SPAWN_CENTER_MARGIN
-            )
-            val sin = sin(sizeMultiplier * Math.PI)
-            bubble.alpha = (sin * 255f).toInt()
-            bubble.radius = Radius(bubble.initialRadius.value * sin.toFloat())
-        }
-        invalidate()
-    }
-
-    private fun startLinearBackgroundParticles() {
-        // speed: 100px per second
-        val animator = infiniteAnimator(100, LinearInterpolator()) {
-            createParticlesMovementUpdater(clockRadius - OUTER_SECONDS_TRACK_MARGIN)
-        }
-        animator.start()
-    }
 
     companion object {
         const val MIN_SIZE = 1000
