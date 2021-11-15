@@ -21,6 +21,18 @@ class Hand(
             val radius = Random.nextFloat(0f, radius.value)
             val deviation = Random.nextFloat(-DEVIATION, DEVIATION)
             val style = if (Random.nextBoolean()) Style.FILL else Style.STROKE
+
+            /* A particle drawn by a Hand is defined by a polar point (which is effectively an angle and
+            some distance from some point O(x,y), which is called their center coordinate. Usually, all
+            particles used in the view have their center set to O(0, 0) (which is the center of the clock).
+            In practise, every particle is drawn in the following way: a particle gets its 'x' coordinate assigned,
+            then canvas is rotated by the point's angle value. This way, the 'x' coordinate becomes the radius
+            of the polar point describing the particle. But in case if we need to have particles with the same
+            angle and radius but located at some distance from each other on a perpendicular placed through the vector
+            of the particle, it effectively means its 'y' coordinate should be different from the particle
+            we are shifting away from.
+             */
+
             val coordinateCenter = CartesianPoint(y = deviation)
             val particle = Particle(
                 coordinateCenter = coordinateCenter,
