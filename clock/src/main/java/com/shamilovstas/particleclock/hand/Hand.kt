@@ -11,7 +11,7 @@ import kotlin.random.Random
 
 class Hand(
     val radius: Radius = Radius(0f),
-    var sweepAngle: Angle = Angle(10f)
+    var sweepAngle: Angle = Angle(18f)
 ) {
 
     private val particles = mutableListOf<Particle>()
