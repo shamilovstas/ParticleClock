@@ -12,7 +12,6 @@ import kotlin.math.sin
 import kotlin.random.Random
 
 class ParticlesBackground(
-    private val isAnimated: Boolean,
     private val invalidateCallback: () -> Unit
 ) {
 
@@ -113,9 +112,7 @@ class ParticlesBackground(
     }
 
     fun startAnimation() {
-        if (isAnimated) {
-            startLinearBackgroundParticles()
-        }
+        startLinearBackgroundParticles()
     }
 
     companion object {

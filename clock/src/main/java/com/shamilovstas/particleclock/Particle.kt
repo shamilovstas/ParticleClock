@@ -2,7 +2,6 @@ package com.shamilovstas.particleclock
 
 import android.graphics.Canvas
 import android.graphics.Paint
-import kotlin.math.sin
 
 class Particle(
     val coordinateCenter: CartesianPoint = CartesianPoint(),
@@ -10,7 +9,6 @@ class Particle(
     val style: Style,
     var radius: Radius
 ) {
-
     val initialRadius = radius
     var alpha: Int = 255
 

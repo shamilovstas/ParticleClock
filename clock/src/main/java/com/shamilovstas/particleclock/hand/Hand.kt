@@ -8,9 +8,10 @@ import kotlin.math.roundToInt
 import kotlin.math.sin
 import kotlin.random.Random
 
+private typealias HandRadius = Radius
 
 class Hand(
-    val radius: Radius = Radius(0f),
+    val radius: HandRadius,
     var sweepAngle: Angle = Angle(18f)
 ) {
 
@@ -32,7 +33,6 @@ class Hand(
             of the particle, it effectively means its 'y' coordinate should be different from the particle
             we are shifting away from.
              */
-
             val coordinateCenter = CartesianPoint(y = deviation)
             val particle = Particle(
                 coordinateCenter = coordinateCenter,
@@ -40,6 +40,9 @@ class Hand(
                 style = style,
                 radius = Radius(20f)
             )
+            particle.radius = calculateParticleSize(particle, this.radius)
+            particle.alpha = calculateParticleAlpha(particle, this.radius)
+
             particles.add(particle)
         }
     }
@@ -57,7 +60,7 @@ class Hand(
         infiniteAnimator(
             speed = 100,
             interpolator = LinearInterpolator(),
-            onAnimationUpdate = { createParticlesMovementUpdater(radius, invalidationCallback) }
+            onAnimationUpdate = { moveParticles(radius, invalidationCallback) }
         ).start()
     }
 
@@ -72,24 +75,36 @@ class Hand(
         }
     }
 
-    private fun createParticlesMovementUpdater(
+    private fun moveParticles(
         maxRadius: Radius,
         callback: () -> Unit
     ) {
-        for (bubble in particles) {
-            val newRadius = (bubble.point.radius.value + 1) % maxRadius.value
-            bubble.point.radius = Radius(newRadius)
-            val distanceFraction = getFraction(bubble.point.radius.value, radius.value)
-            val radiusMultiplier = if (distanceFraction > 0.5) 0.5 else distanceFraction
-            val sin = sin(radiusMultiplier * Math.PI)
-            bubble.radius = Radius(bubble.initialRadius.value * sin.toFloat())
-            bubble.alpha = (sin(distanceFraction * Math.PI) * 255).roundToInt()
+        for (particle in particles) {
+            val newRadius = (particle.point.radius.value + 1) % maxRadius.value
+            particle.point.radius = Radius(newRadius)
+            particle.radius = calculateParticleSize(particle, this.radius)
+            particle.alpha = calculateParticleAlpha(particle, this.radius)
         }
         callback.invoke()
     }
 
+    private fun calculateParticleSize(particle: Particle, maxRadius: HandRadius): Radius {
+        val distanceFraction = getFraction(particle.point.radius.value, maxRadius.value)
+        val radiusMultiplier =
+            if (distanceFraction > STABLE_RADIUS_THRESHOLD_PERCENT) STABLE_RADIUS_THRESHOLD_PERCENT else distanceFraction
+        val sin = sin(radiusMultiplier * Math.PI)
+        return Radius(particle.initialRadius.value * sin.toFloat())
+    }
+
+    private fun calculateParticleAlpha(particle: Particle, maxRadius: HandRadius): Int {
+        val distanceFraction = getFraction(particle.point.radius.value, maxRadius.value)
+        return (sin(distanceFraction * Math.PI) * 255).roundToInt()
+    }
+
+
     companion object {
         const val PARTICLE_COUNT = 60
         private const val DEVIATION = 10f
+        private const val STABLE_RADIUS_THRESHOLD_PERCENT = 0.5
     }
 }

@@ -59,7 +59,7 @@ class ParticleClock @JvmOverloads constructor(
     }
 
     private val particlesBackground =
-        ParticlesBackground(true) { this.invalidate() }
+        ParticlesBackground { this.invalidate() }
 
 
     // endregion
