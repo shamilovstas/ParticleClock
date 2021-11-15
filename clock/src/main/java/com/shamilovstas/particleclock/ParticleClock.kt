@@ -8,8 +8,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
-import android.view.SurfaceHolder
-import android.view.SurfaceView
+import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.LinearInterpolator
 import com.shamilovstas.particleclock.hand.Hand
@@ -18,7 +17,6 @@ import java.time.temporal.ChronoField
 import kotlin.math.abs
 import kotlin.math.min
 import kotlin.math.sin
-import kotlin.properties.Delegates
 import kotlin.random.Random
 
 class ParticleClock @JvmOverloads constructor(
@@ -26,51 +24,45 @@ class ParticleClock @JvmOverloads constructor(
     attributeSet: AttributeSet? = null,
     defStyleAttr: Int = 0,
     defStyleRes: Int = 0
-) : SurfaceView(context, attributeSet, defStyleAttr, defStyleRes), SurfaceHolder.Callback {
+) : View(context, attributeSet, defStyleAttr, defStyleRes) {
 
-    private var drawingThread by Delegates.notNull<DrawingThread>()
+    private var isInitialized = false
     private val particlesHolder = ParticlesHolder()
-
-    init {
-        holder.addCallback(this)
-    }
-
-    private var color: Int = Color.WHITE
 
     // region Paints
     val particlesPaint = Paint().apply {
         this.color = Color.BLUE
-        this.strokeWidth = 4f
+        this.isAntiAlias = true
+        this.strokeWidth = 2f
     }
 
     val hourPaint = Paint().apply {
         this.color = Color.BLUE
         this.strokeWidth = 10.0f
+        this.isAntiAlias = true
         this.style = Paint.Style.FILL
     }
 
     val minutePaint = Paint().apply {
         this.color = Color.BLUE
         this.strokeWidth = 4.0f
+        this.isAntiAlias = true
         this.style = Paint.Style.STROKE
     }
 
     val secondsTrackPaint = Paint().apply {
         this.color = Color.BLUE
         strokeWidth = 2f
+        this.isAntiAlias = true
         style = Paint.Style.STROKE
     }
 
     val secondsIndicatorPaint: Paint = Paint().apply {
         this.color = Color.BLUE
         strokeWidth = 12f
+        this.isAntiAlias = true
         style = Paint.Style.STROKE
         strokeCap = Paint.Cap.ROUND
-    }
-
-    val bubblePaint = Paint().apply {
-        color = Color.BLUE
-        strokeWidth = 4f
     }
 
     // endregion
@@ -116,10 +108,6 @@ class ParticleClock @JvmOverloads constructor(
     }
     // endregion
 
-    override fun setBackgroundColor(color: Int) {
-        this.color = color
-    }
-
     private fun backgroundParticlesPulse(): Animator {
         val maxRadius = clockRadius - OUTER_SECONDS_TRACK_MARGIN
         val pulseAnimator = ValueAnimator.ofInt(0, 25)
@@ -137,7 +125,6 @@ class ParticleClock @JvmOverloads constructor(
 
     override fun draw(canvas: Canvas) {
         super.draw(canvas)
-        canvas.drawColor(color)
         canvas.translate(center.x, center.y)
         // region 1. Drawing outer clock contour (minutes and hours indicators)
         drawMinutesIndicators(canvas)
@@ -177,6 +164,7 @@ class ParticleClock @JvmOverloads constructor(
         val minuteHandAngleRange = minutesHand.sector.asRange()
         val hourHandAngleRange = hoursHand.sector.asRange()
         possibleAngleRange = (0..360) - minuteHandAngleRange - hourHandAngleRange
+        init()
         invalidate()
     }
 
@@ -217,7 +205,6 @@ class ParticleClock @JvmOverloads constructor(
     }
 
     private fun runSecondsAnimation(seconds: Int) {
-
         var angle = analogClockGeometry.secondsToAngle(Second(seconds))
         if (secondsHandAngle.isInitialized().not()) {
             secondsHandAngle = angle
@@ -249,26 +236,18 @@ class ParticleClock @JvmOverloads constructor(
         minutesHand.angle = analogClockGeometry.minuteToAngle(Minute(minute), Second(seconds))
     }
 
-    override fun surfaceCreated(holder: SurfaceHolder) {
-        drawingThread = DrawingThread(getHolder(), this)
-        drawingThread.start()
-        hoursHand.startAnimation { invalidate() }
-        minutesHand.startAnimation { invalidate() }
-        startLinearBackgroundParticles()
+    private fun init() {
+        if (!isInitialized) {
+            isInitialized = true
+            hoursHand.startAnimation { invalidate() }
+            minutesHand.startAnimation { invalidate() }
+            startLinearBackgroundParticles()
+        }
     }
 
-    override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
-    }
-
-    override fun surfaceDestroyed(holder: SurfaceHolder) {
-        drawingThread.interrupt()
-    }
-
-    // This method might be the source of the occasional native crashes
     private fun createParticlesMovementUpdater(
         maxRadius: Radius,
     ) {
-        if (possibleAngleRange.isEmpty()) return //TODO figure out how to start animation only after time is set
         for (bubble in particlesHolder.particles) {
 
             val point = bubble.point
