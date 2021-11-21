@@ -23,6 +23,7 @@ class ParticleClock @JvmOverloads constructor(
     private var isInitialized = false
     // region Paints
 
+    private var isAnimationEnabled = true
 
     val particlesPaint = Paint().apply {
         this.color = Color.BLUE
@@ -137,14 +138,13 @@ class ParticleClock @JvmOverloads constructor(
         val hours = localDate.get(ChronoField.HOUR_OF_AMPM)
         val seconds = localDate.get(ChronoField.SECOND_OF_MINUTE)
         val minutes = localDate.get(ChronoField.MINUTE_OF_HOUR)
-        runSecondsAnimation(seconds)
         setMinuteHandAngle(minutes, seconds)
         setHourHandAngle(hours, minutes, seconds)
-
+        setSecondHandAngle(seconds)
         val minuteHandAngleRange = minutesHand.sector.asRange()
         val hourHandAngleRange = hoursHand.sector.asRange()
         particlesBackground.allowedAngles = (0..360) - minuteHandAngleRange - hourHandAngleRange
-        init()
+        startPermanentAnimations()
         invalidate()
     }
 
@@ -179,8 +179,8 @@ class ParticleClock @JvmOverloads constructor(
         }
     }
 
-    private fun runSecondsAnimation(seconds: Int) {
-        var angle = analogClockGeometry.secondsToAngle(Second(seconds))
+    private fun runSecondsAnimation(newAngle: Angle) {
+        var angle = newAngle
         if (secondsHandAngle.isInitialized().not()) {
             secondsHandAngle = angle
         } else {
@@ -211,12 +211,25 @@ class ParticleClock @JvmOverloads constructor(
         minutesHand.angle = analogClockGeometry.minuteToAngle(Minute(minute), Second(seconds))
     }
 
-    private fun init() {
+    private fun setSecondHandAngle(seconds: Int) {
+        val oldAngle = secondsHandAngle
+        val newAngle = analogClockGeometry.secondsToAngle(Second(seconds))
+
+        if (isAnimationEnabled) {
+            runSecondsAnimation(newAngle)
+        } else {
+            secondsHandAngle = newAngle
+        }
+    }
+
+    private fun startPermanentAnimations() {
         if (!isInitialized) {
             isInitialized = true
-            hoursHand.startAnimation { invalidate() }
-            minutesHand.startAnimation { invalidate() }
-            particlesBackground.startAnimation()
+            if (isAnimationEnabled) {
+                hoursHand.startAnimation { invalidate() }
+                minutesHand.startAnimation { invalidate() }
+                particlesBackground.startAnimation()
+            }
         }
     }
 
