@@ -2,6 +2,7 @@ package com.shamilovstas.particleclock
 
 import android.graphics.Canvas
 import android.graphics.Paint
+import androidx.core.graphics.withRotation
 import com.shamilovstas.particleclock.model.point.CartesianPoint
 import com.shamilovstas.particleclock.model.point.PolarPoint
 
@@ -20,10 +21,9 @@ class Particle(
             Style.STROKE -> Paint.Style.STROKE
         }
         paint.alpha = alpha
-        val count = canvas.save()
-        canvas.rotate(point.angle.angle)
-        canvas.drawCircle(point.radius.value, coordinateCenter.y, radius.value, paint)
-        canvas.restoreToCount(count)
+        canvas.withRotation(point.angle.angle) {
+            canvas.drawCircle(point.radius.value, coordinateCenter.y, radius.value, paint)
+        }
     }
 }
 

@@ -3,6 +3,7 @@ package com.shamilovstas.particleclock.hand
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.view.animation.LinearInterpolator
+import androidx.core.graphics.withRotation
 import com.shamilovstas.particleclock.*
 import com.shamilovstas.particleclock.model.angle.Angle
 import com.shamilovstas.particleclock.model.angle.Sector
@@ -73,12 +74,11 @@ class Hand(
 
     fun draw(canvas: Canvas, paint: Paint) {
         if (angle.isInitialized()) {
-            val count = canvas.save()
-            canvas.rotate(angle.angle)
-            particles.forEach {
-                it.draw(canvas, paint)
+            canvas.withRotation(angle.angle) {
+                particles.forEach {
+                    it.draw(canvas, paint)
+                }
             }
-            canvas.restoreToCount(count)
         }
     }
 

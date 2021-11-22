@@ -86,9 +86,7 @@ class ParticlesBackground(
     }
 
 
-    private fun createParticlesMovementUpdater(
-        maxRadius: Radius
-    ) {
+    private fun createParticlesMovementUpdater(maxRadius: Radius) {
         for (bubble in particles) {
 
             val point = bubble.point
