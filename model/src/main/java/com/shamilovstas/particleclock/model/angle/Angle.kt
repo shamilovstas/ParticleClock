@@ -1,6 +1,5 @@
-package com.shamilovstas.particleclock
+package com.shamilovstas.particleclock.model.angle
 
-import androidx.annotation.VisibleForTesting
 import kotlin.math.abs
 
 @JvmInline
@@ -8,7 +7,6 @@ value class Angle(val angle: Float = Float.NaN) {
 
     companion object {
         val NOT_INITIALIZED = Angle(angle = Float.NaN)
-        @VisibleForTesting
         val ANGLE_DELTA = 0.000001f
     }
 
@@ -63,6 +61,9 @@ value class Angle(val angle: Float = Float.NaN) {
     }
 
     fun toRadians(): Double {
-        return Math.toRadians(this.angle.toDouble())
+        return this.angle.toRadians()
     }
 }
+
+fun Number.toDegrees() = Math.toDegrees(this.toDouble())
+fun Number.toRadians() = Math.toRadians(this.toDouble())

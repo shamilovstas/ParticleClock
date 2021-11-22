@@ -8,7 +8,15 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
 import com.shamilovstas.particleclock.background.ParticlesBackground
+import com.shamilovstas.particleclock.geometry.AnalogClockGeometry
 import com.shamilovstas.particleclock.hand.Hand
+import com.shamilovstas.particleclock.model.angle.Angle
+import com.shamilovstas.particleclock.model.point.CartesianPoint
+import com.shamilovstas.particleclock.model.point.PolarPoint
+import com.shamilovstas.particleclock.model.point.Radius
+import com.shamilovstas.particleclock.model.time.Hour
+import com.shamilovstas.particleclock.model.time.Minute
+import com.shamilovstas.particleclock.model.time.Second
 import java.time.LocalTime
 import java.time.temporal.ChronoField
 import kotlin.math.min
@@ -70,7 +78,8 @@ class ParticleClock @JvmOverloads constructor(
     var hoursHand = Hand(radius = Radius(400f))
 
 
-    var clockRadius: Radius = Radius()
+    var clockRadius: Radius =
+        Radius()
     var center: CartesianPoint = CartesianPoint()
 
     val analogClockGeometry = AnalogClockGeometry()
@@ -150,7 +159,8 @@ class ParticleClock @JvmOverloads constructor(
 
     private fun drawMinutesIndicators(canvas: Canvas) {
         for (minute in 0 until MINUTES_IN_HOUR) {
-            val angle = Angle((minute * DEGREE_PER_SEGMENT).toFloat())
+            val angle =
+                Angle((minute * DEGREE_PER_SEGMENT).toFloat())
             val indicatorCoordinate = TemporaryHolders.polarPoint.also {
                 it.radius = clockRadius
                 it.angle = angle
@@ -193,7 +203,9 @@ class ParticleClock @JvmOverloads constructor(
                     invalidate()
                 }
                 addListener(animationAdapter(onEnd = {
-                    if (isNewLap) secondsHandAngle = Angle(360f) - secondsHandAngle
+                    if (isNewLap) secondsHandAngle = Angle(
+                        360f
+                    ) - secondsHandAngle
                 }))
             }
             val animator = AnimatorSet()
@@ -212,7 +224,6 @@ class ParticleClock @JvmOverloads constructor(
     }
 
     private fun setSecondHandAngle(seconds: Int) {
-        val oldAngle = secondsHandAngle
         val newAngle = analogClockGeometry.secondsToAngle(Second(seconds))
 
         if (isAnimationEnabled) {
@@ -232,7 +243,6 @@ class ParticleClock @JvmOverloads constructor(
             }
         }
     }
-
 
     companion object {
         const val MIN_SIZE = 1000

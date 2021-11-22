@@ -1,4 +1,9 @@
-package com.shamilovstas.particleclock
+package com.shamilovstas.particleclock.geometry
+
+import com.shamilovstas.particleclock.model.angle.Angle
+import com.shamilovstas.particleclock.model.time.Hour
+import com.shamilovstas.particleclock.model.time.Minute
+import com.shamilovstas.particleclock.model.time.Second
 
 // It's assumed the clock is drawn in clockwise direction
 class AnalogClockGeometry {
@@ -41,23 +46,7 @@ class AnalogClockGeometry {
     }
 }
 
-@JvmInline
-value class Minute(val value: Int) {
-    init {
-        require(value in AnalogClockGeometry.minutesRange)
-    }
-}
 
-@JvmInline
-value class Hour(val value: Int) {
-    init {
-        require(value in AnalogClockGeometry.hoursRange)
-    }
-}
 
-@JvmInline
-value class Second(val value: Int) {
-    init {
-        require(value in AnalogClockGeometry.secondsRange)
-    }
-}
+
+

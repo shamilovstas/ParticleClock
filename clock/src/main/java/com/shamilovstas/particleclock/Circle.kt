@@ -2,12 +2,17 @@ package com.shamilovstas.particleclock
 
 import android.graphics.Rect
 import android.graphics.RectF
+import com.shamilovstas.particleclock.model.misc.Refreshable
+import com.shamilovstas.particleclock.model.point.CartesianPoint
+import com.shamilovstas.particleclock.model.point.Radius
 import kotlin.math.roundToInt
 
 
 data class Circle(
     val center: CartesianPoint = CartesianPoint(),
-    var radius: Radius = Radius(0f)
+    var radius: Radius = Radius(
+        0f
+    )
 ) : Refreshable {
 
     private val rect = Rect()
@@ -44,4 +49,3 @@ data class Circle(
     }
 }
 
-fun Number.toDegrees() = Math.toDegrees(this.toDouble())

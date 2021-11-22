@@ -7,6 +7,9 @@ import android.graphics.Paint
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.LinearInterpolator
 import com.shamilovstas.particleclock.*
+import com.shamilovstas.particleclock.model.angle.Angle
+import com.shamilovstas.particleclock.model.point.PolarPoint
+import com.shamilovstas.particleclock.model.point.Radius
 import kotlin.math.abs
 import kotlin.math.sin
 import kotlin.random.Random
@@ -21,7 +24,8 @@ class ParticlesBackground(
 
     var allowedAngles: List<Int> = listOf()
 
-    var radius: Radius = Radius(0f)
+    var radius: Radius =
+        Radius(0f)
         set(value) {
             field = value
             init()
@@ -29,12 +33,18 @@ class ParticlesBackground(
 
     private fun init() {
         particles.clear()
-        val minDistance = Radius(ParticleClock.BUBBLE_SPAWN_CENTER_MARGIN)
+        val minDistance =
+            Radius(ParticleClock.BUBBLE_SPAWN_CENTER_MARGIN)
         val maxDistance: Radius = radius - ParticleClock.OUTER_SECONDS_TRACK_MARGIN
         repeat(PARTICLES_COUNT) {
             val style = if (Random.nextBoolean()) Style.FILL else Style.STROKE
             val bubbleRadius = Radius(10f)
-            val distanceFromCenter = Radius(Random.nextFloat(minDistance.value, maxDistance.value))
+            val distanceFromCenter = Radius(
+                Random.nextFloat(
+                    minDistance.value,
+                    maxDistance.value
+                )
+            )
             val randomAngle = Random.nextFloat() * 360f
 
             val point = PolarPoint(distanceFromCenter)
@@ -52,7 +62,8 @@ class ParticlesBackground(
             )
             val sin = sin(multiplier * Math.PI)
             particle.alpha = (sin * 255f).toInt()
-            particle.radius = Radius(particle.initialRadius.value * sin.toFloat())
+            particle.radius =
+                Radius(particle.initialRadius.value * sin.toFloat())
             particles.add(particle)
         }
     }
@@ -95,7 +106,8 @@ class ParticlesBackground(
             )
             val sin = sin(sizeMultiplier * Math.PI)
             bubble.alpha = (sin * 255f).toInt()
-            bubble.radius = Radius(bubble.initialRadius.value * sin.toFloat())
+            bubble.radius =
+                Radius(bubble.initialRadius.value * sin.toFloat())
         }
         invalidateCallback.invoke()
     }

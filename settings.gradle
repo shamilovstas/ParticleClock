@@ -9,3 +9,4 @@ dependencyResolutionManagement {
 rootProject.name = "ParticleClock"
 include ':app'
 include ':clock'
+include ':model'

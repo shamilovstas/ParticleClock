@@ -26,7 +26,7 @@ class CircleInstrumentedTest {
             bottom = center.y + radius
         }
         circle.center.copyFrom(center)
-        circle.radius = Radius(radius)
+        circle.radius = com.shamilovstas.particleclock.model.point.Radius(radius)
 
         assertEquals(expected, circle.boundingRectF)
     }

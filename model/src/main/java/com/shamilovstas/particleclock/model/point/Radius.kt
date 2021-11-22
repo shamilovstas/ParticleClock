@@ -1,4 +1,4 @@
-package com.shamilovstas.particleclock
+package com.shamilovstas.particleclock.model.point
 
 import kotlin.math.max
 

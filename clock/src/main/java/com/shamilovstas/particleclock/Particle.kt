@@ -2,12 +2,14 @@ package com.shamilovstas.particleclock
 
 import android.graphics.Canvas
 import android.graphics.Paint
+import com.shamilovstas.particleclock.model.point.CartesianPoint
+import com.shamilovstas.particleclock.model.point.PolarPoint
 
 class Particle(
     val coordinateCenter: CartesianPoint = CartesianPoint(),
     val point: PolarPoint,
     val style: Style,
-    var radius: Radius
+    var radius: com.shamilovstas.particleclock.model.point.Radius
 ) {
     val initialRadius = radius
     var alpha: Int = 255

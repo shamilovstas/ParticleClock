@@ -1,4 +1,4 @@
-package com.shamilovstas.particleclock
+package com.shamilovstas.particleclock.model.angle
 
 import kotlin.math.roundToInt
 

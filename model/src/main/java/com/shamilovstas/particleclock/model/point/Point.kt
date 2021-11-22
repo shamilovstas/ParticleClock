@@ -1,5 +1,7 @@
-package com.shamilovstas.particleclock
+package com.shamilovstas.particleclock.model.point
 
+import com.shamilovstas.particleclock.model.angle.toDegrees
+import com.shamilovstas.particleclock.model.misc.Refreshable
 import kotlin.math.*
 
 
@@ -16,7 +18,12 @@ class CartesianPoint(
     }
 
     override fun toPolar(obj: PolarCoordinate) {
-        val angle = Angle((atan2(y.toDouble(), x.toDouble()).toDegrees()).toFloat())
+        val angle = com.shamilovstas.particleclock.model.angle.Angle(
+            (atan2(
+                y.toDouble(),
+                x.toDouble()
+            ).toDegrees()).toFloat()
+        )
         val radius = Radius(hypot(x, y))
         obj.angle = angle
         obj.radius = radius
@@ -57,12 +64,14 @@ class CartesianPoint(
 
 class PolarPoint(
     override var radius: Radius = Radius(0f),
-    angle: Angle = Angle(0f)
+    angle: com.shamilovstas.particleclock.model.angle.Angle = com.shamilovstas.particleclock.model.angle.Angle(
+        0f
+    )
 ) : PolarCoordinate, Refreshable {
 
     override val startCoordinate = CartesianPoint()
 
-    override var angle: Angle = angle
+    override var angle: com.shamilovstas.particleclock.model.angle.Angle = angle
         set(value) {
             field = value
             val pi = field.toRadians()
@@ -92,7 +101,7 @@ class PolarPoint(
     }
 
     override fun refresh() {
-        angle = Angle(0f)
+        angle = com.shamilovstas.particleclock.model.angle.Angle(0f)
         radius = Radius(0f)
     }
 
@@ -133,7 +142,7 @@ interface PolarCoordinate {
 
     val startCoordinate: CartesianCoordinate
 
-    var angle: Angle
+    var angle: com.shamilovstas.particleclock.model.angle.Angle
     var radius: Radius
 
     fun copyFrom(other: PolarCoordinate)
