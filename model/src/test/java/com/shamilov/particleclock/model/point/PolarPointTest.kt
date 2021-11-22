@@ -1,9 +1,9 @@
-package com.shamilovstas.particleclock.point
+package com.shamilov.particleclock.model.point
 
-import com.shamilovstas.particleclock.Angle
-import com.shamilovstas.particleclock.CartesianPoint
-import com.shamilovstas.particleclock.PolarPoint
-import com.shamilovstas.particleclock.Radius
+import com.shamilovstas.particleclock.model.angle.Angle
+import com.shamilovstas.particleclock.model.point.CartesianPoint
+import com.shamilovstas.particleclock.model.point.PolarPoint
+import com.shamilovstas.particleclock.model.point.Radius
 import org.junit.Assert.*
 import org.junit.Test
 
@@ -73,8 +73,12 @@ class PolarPointTest {
 
     @Test
     fun `should return false when cartesian points are not equal`() {
-        val first = PolarPoint(Radius(23f)).apply { this.angle = Angle(21f) }
-        val second = PolarPoint(Radius(89f)).apply { this.angle = Angle(87f) }
+        val first = PolarPoint(Radius(23f)).apply { this.angle =
+            Angle(21f)
+        }
+        val second = PolarPoint(Radius(89f)).apply { this.angle =
+            Angle(87f)
+        }
         assertFalse(first == second)
     }
 }

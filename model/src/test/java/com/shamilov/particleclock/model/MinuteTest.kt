@@ -1,5 +1,6 @@
-package com.shamilovstas.particleclock
+package com.shamilov.particleclock.model
 
+import com.shamilovstas.particleclock.model.time.Minute
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

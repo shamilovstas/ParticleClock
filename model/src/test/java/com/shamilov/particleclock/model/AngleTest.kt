@@ -1,5 +1,6 @@
-package com.shamilovstas.particleclock
+package com.shamilov.particleclock.model
 
+import com.shamilovstas.particleclock.model.angle.Angle
 import org.junit.Assert.*
 import org.junit.Test
 

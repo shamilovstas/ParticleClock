@@ -20,7 +20,7 @@ class CircleTest {
 
     @Test
     fun `should set fields to 0 when refresh is called`() {
-        circle.radius = Radius(25f)
+        circle.radius = com.shamilovstas.particleclock.model.point.Radius(25f)
         circle.center.x = 52f
         circle.center.y = 512f
 

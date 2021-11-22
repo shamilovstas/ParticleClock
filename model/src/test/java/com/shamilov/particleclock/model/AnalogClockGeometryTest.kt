@@ -1,8 +1,12 @@
-package com.shamilovstas.particleclock
+package com.shamilov.particleclock.model
 
+import com.shamilovstas.particleclock.geometry.AnalogClockGeometry
+import com.shamilovstas.particleclock.model.angle.Angle
+import com.shamilovstas.particleclock.model.time.Hour
+import com.shamilovstas.particleclock.model.time.Minute
+import com.shamilovstas.particleclock.model.time.Second
 import org.junit.Assert.*
 import org.junit.Test
-import kotlin.math.acos
 
 class AnalogClockGeometryTest {
 

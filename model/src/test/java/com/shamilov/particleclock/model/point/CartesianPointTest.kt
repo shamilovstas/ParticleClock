@@ -1,6 +1,10 @@
-package com.shamilovstas.particleclock.point
+package com.shamilov.particleclock.model.point
 
-import com.shamilovstas.particleclock.*
+import com.shamilovstas.particleclock.model.angle.Angle
+import com.shamilovstas.particleclock.model.point.CartesianCoordinate
+import com.shamilovstas.particleclock.model.point.CartesianPoint
+import com.shamilovstas.particleclock.model.point.PolarPoint
+import com.shamilovstas.particleclock.model.point.Radius
 import org.junit.Assert.*
 import org.junit.Test
 

@@ -1,5 +1,6 @@
-package com.shamilovstas.particleclock
+package com.shamilov.particleclock.model
 
+import com.shamilovstas.particleclock.model.point.Radius
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -76,7 +77,11 @@ class RadiusTest {
 
     @Test
     fun `should return true when first radius is greater than second radius`() {
-        assertTrue(Radius(500f) > Radius(250f))
+        assertTrue(
+            Radius(500f) > Radius(
+                250f
+            )
+        )
     }
 
     @Test
@@ -86,6 +91,7 @@ class RadiusTest {
 
     @Test
     fun `should return true when first radius is equal to second radius`() {
-        assertTrue(Radius(500f) == Radius(500f))
+        assertTrue(Radius(500f) == Radius(500f)
+        )
     }
 }

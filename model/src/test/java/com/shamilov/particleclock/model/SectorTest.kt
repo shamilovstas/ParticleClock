@@ -1,5 +1,7 @@
-package com.shamilovstas.particleclock
+package com.shamilov.particleclock.model
 
+import com.shamilovstas.particleclock.model.angle.Angle
+import com.shamilovstas.particleclock.model.angle.Sector
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test

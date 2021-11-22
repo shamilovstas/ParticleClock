@@ -2,6 +2,7 @@ package com.shamilovstas.particleclock
 
 import android.graphics.RectF
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.shamilovstas.particleclock.model.point.CartesianPoint
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith

@@ -1,6 +1,8 @@
-package com.shamilovstas.particleclock
+package com.shamilov.particleclock.model
 
+import com.shamilovstas.particleclock.model.time.Second
 import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class SecondTest {
@@ -19,6 +21,6 @@ class SecondTest {
     fun `should properly create second when constructed`() {
         val expected = 24
         val actual = Second(24).value
-        Assert.assertEquals(expected, actual)
+        assertEquals(expected, actual)
     }
 }
