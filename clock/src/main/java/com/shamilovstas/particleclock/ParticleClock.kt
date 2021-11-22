@@ -11,6 +11,7 @@ import com.shamilovstas.particleclock.background.ParticlesBackground
 import com.shamilovstas.particleclock.geometry.AnalogClockGeometry
 import com.shamilovstas.particleclock.hand.Hand
 import com.shamilovstas.particleclock.model.angle.Angle
+import com.shamilovstas.particleclock.model.angle.Sector
 import com.shamilovstas.particleclock.model.point.CartesianPoint
 import com.shamilovstas.particleclock.model.point.PolarPoint
 import com.shamilovstas.particleclock.model.point.Radius
@@ -86,14 +87,13 @@ class ParticleClock @JvmOverloads constructor(
 
     object TemporaryHolders {
         fun refresh() {
-            circle.refresh()
             cartesianPoint.refresh()
             polarPoint.refresh()
         }
 
-        var circle = Circle()
         var cartesianPoint = CartesianPoint()
         val polarPoint = PolarPoint()
+        val sector = Sector()
     }
     // endregion
 
@@ -173,19 +173,17 @@ class ParticleClock @JvmOverloads constructor(
     }
 
     private fun drawSecondsTrack(canvas: Canvas, radius: Radius, indicatorAngle: Angle) {
-        val circle = TemporaryHolders.circle
-        circle.radius = radius
-        circle.draw(canvas, secondsTrackPaint)
+        val trackCenter = TemporaryHolders.cartesianPoint.apply {
+            x = 0f
+            y = 0f
+        }
+        trackCenter.drawCircle(radius, canvas, secondsTrackPaint)
 
         if (secondsHandAngle.isInitialized()) {
-            val angle = secondsHandAngle - indicatorAngle / 2f
-            canvas.drawArc(
-                circle.boundingRectF,
-                angle.angle,
-                indicatorAngle.angle,
-                false,
-                secondsIndicatorPaint
-            )
+            val sector = TemporaryHolders.sector
+            sector.start = secondsHandAngle - indicatorAngle / 2f
+            sector.end = indicatorAngle
+            sector.drawSector(trackCenter, radius, canvas, secondsIndicatorPaint)
         }
     }
 

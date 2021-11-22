@@ -3,6 +3,7 @@ package com.shamilovstas.particleclock.app
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.widget.CheckBox
 import android.widget.SeekBar
 import android.widget.TextView
@@ -57,6 +58,7 @@ class MainActivity : AppCompatActivity() {
                 secondsSeekbar.progress = second
                 minutesSeekbar.progress = minute
                 hoursSeekbar.progress = hour
+                Log.d("ParticleClock", currentTime.format(DateTimeFormatter.ISO_LOCAL_TIME))
                 clock.setTime(currentTime)
                 timeLabel.text = formatter.format(currentTime)
             }
