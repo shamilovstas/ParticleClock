@@ -13,6 +13,10 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
 }
 
-test {
-    finalizedBy jacocoTestReport
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+        csv.required = false
+    }
 }

@@ -32,5 +32,5 @@ jobs:
       uses: codecov/codecov-action@v2
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        files: ./clock/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml
+        files: ./clock/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml,./model/build/reports/jacoco/jacocoTestReport.xml
         verbose: true
