@@ -7,6 +7,10 @@ import android.os.Looper
 import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import com.shamilovstas.particleclock.compose.Clock
 import com.shamilovstas.particleclock.view.ParticleClock
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -22,6 +26,10 @@ class MainActivity : AppCompatActivity(), TimePickerDialog.OnTimeSetListener {
 
         val timeLabel = findViewById<TextView>(R.id.time)
         val clock = findViewById<ParticleClock>(R.id.clock)
+        val composeClock = findViewById<ComposeView>(R.id.compose_clock)
+        composeClock.setContent {
+            Clock(modifier = Modifier.fillMaxSize())
+        }
         val formatter = DateTimeFormatter.ISO_LOCAL_TIME
 
         val handler = Handler(Looper.getMainLooper())

@@ -30,6 +30,16 @@ android {
         coreLibraryDesugaringEnabled true
 
     }
+
+    buildFeatures {
+        // Enables Jetpack Compose for this module
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion '1.0.5'
+    }
+
     kotlinOptions {
         jvmTarget = '1.8'
     }
@@ -37,6 +47,10 @@ android {
 
 dependencies {
     implementation project(':clock-view')
+    implementation project(':clock-compose')
+    implementation 'androidx.compose.ui:ui:1.0.5'
+    implementation 'androidx.compose.foundation:foundation:1.0.5'
+
     implementation 'androidx.core:core-ktx:1.6.0'
     implementation 'androidx.appcompat:appcompat:1.3.1'
     implementation 'com.google.android.material:material:1.4.0'
