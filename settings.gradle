@@ -10,3 +10,4 @@ rootProject.name = "ParticleClock"
 include ':app'
 include ':clock-view'
 include ':model'
+include ':clock-compose'

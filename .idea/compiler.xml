@@ -3,6 +3,7 @@
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="1.8">
       <module name="ParticleClock.app" target="11" />
+      <module name="ParticleClock.clock-compose" target="11" />
       <module name="ParticleClock.clock-view" target="11" />
     </bytecodeTargetLevel>
   </component>
