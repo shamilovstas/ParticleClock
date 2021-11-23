@@ -1,4 +1,4 @@
-package com.shamilovstas.particleclock.background
+package com.shamilovstas.particleclock.view.background
 
 import android.animation.Animator
 import android.animation.ValueAnimator
@@ -6,10 +6,10 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.LinearInterpolator
-import com.shamilovstas.particleclock.*
 import com.shamilovstas.particleclock.model.angle.Angle
 import com.shamilovstas.particleclock.model.point.PolarPoint
 import com.shamilovstas.particleclock.model.point.Radius
+import com.shamilovstas.particleclock.view.*
 import kotlin.math.abs
 import kotlin.math.sin
 import kotlin.random.Random

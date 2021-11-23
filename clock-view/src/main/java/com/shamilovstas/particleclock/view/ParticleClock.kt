@@ -1,4 +1,4 @@
-package com.shamilovstas.particleclock
+package com.shamilovstas.particleclock.view
 
 import android.animation.AnimatorSet
 import android.content.Context
@@ -7,9 +7,9 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
-import com.shamilovstas.particleclock.background.ParticlesBackground
+import com.shamilovstas.particleclock.view.background.ParticlesBackground
 import com.shamilovstas.particleclock.geometry.AnalogClockGeometry
-import com.shamilovstas.particleclock.hand.Hand
+import com.shamilovstas.particleclock.view.hand.Hand
 import com.shamilovstas.particleclock.model.angle.Angle
 import com.shamilovstas.particleclock.model.angle.Sector
 import com.shamilovstas.particleclock.model.point.CartesianPoint

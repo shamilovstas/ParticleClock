@@ -1,15 +1,15 @@
-package com.shamilovstas.particleclock.hand
+package com.shamilovstas.particleclock.view.hand
 
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.view.animation.LinearInterpolator
 import androidx.core.graphics.withRotation
-import com.shamilovstas.particleclock.*
 import com.shamilovstas.particleclock.model.angle.Angle
 import com.shamilovstas.particleclock.model.angle.Sector
 import com.shamilovstas.particleclock.model.point.CartesianPoint
 import com.shamilovstas.particleclock.model.point.PolarPoint
 import com.shamilovstas.particleclock.model.point.Radius
+import com.shamilovstas.particleclock.view.*
 import kotlin.math.roundToInt
 import kotlin.math.sin
 import kotlin.random.Random

@@ -8,7 +8,7 @@ import android.widget.CheckBox
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.shamilovstas.particleclock.ParticleClock
+import com.shamilovstas.particleclock.view.ParticleClock
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit

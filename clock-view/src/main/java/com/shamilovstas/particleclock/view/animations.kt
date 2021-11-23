@@ -1,4 +1,4 @@
-package com.shamilovstas.particleclock
+package com.shamilovstas.particleclock.view
 
 import android.animation.Animator
 import android.animation.ValueAnimator
