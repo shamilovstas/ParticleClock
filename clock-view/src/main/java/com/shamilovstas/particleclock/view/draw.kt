@@ -2,21 +2,16 @@ package com.shamilovstas.particleclock.view
 
 import android.graphics.Canvas
 import android.graphics.Paint
-import androidx.core.graphics.withRotation
 import com.shamilovstas.particleclock.model.angle.Sector
 import com.shamilovstas.particleclock.model.point.CartesianPoint
 import com.shamilovstas.particleclock.model.point.PolarPoint
 import com.shamilovstas.particleclock.model.point.Radius
 
 fun PolarPoint.drawCircle(radius: Radius, canvas: Canvas, paint: Paint) {
-    canvas.withRotation(this.angle.angle) {
-        canvas.drawCircle(
-            this@drawCircle.radius.value,
-            0f,
-            radius.value,
-            paint
-        )
-    }
+    val count = canvas.save()
+    canvas.rotate(this.angle.angle)
+    canvas.drawCircle(this.radius.value, 0f, radius.value, paint)
+    canvas.restoreToCount(count)
 }
 
 fun CartesianPoint.drawCircle(radius: Radius, canvas: Canvas, paint: Paint) {
