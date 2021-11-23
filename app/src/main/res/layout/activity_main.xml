@@ -1,65 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <com.shamilovstas.particleclock.view.ParticleClock
-        android:id="@+id/clock"
+    <HorizontalScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.shamilovstas.particleclock.view.ParticleClock
+                android:id="@+id/clock"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <!-- Add compose clock later -->
+        </LinearLayout>
+
+    </HorizontalScrollView>
 
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
 
-        <CheckBox
-            android:id="@+id/auto_mode"
-            android:layout_width="0dp"
+        <Button
+            android:id="@+id/set_time"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_weight="1"
-            android:checked="true"
-            android:text="Auto mode enabled" />
+            android:text="Set time" />
 
         <TextView
             android:id="@+id/time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
             android:layout_marginTop="8dp"
             android:textSize="14sp" />
     </LinearLayout>
-
-
-    <SeekBar
-        android:id="@+id/hours_seekbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:enabled="false"
-        android:max="23" />
-
-    <SeekBar
-        android:id="@+id/minutes_seekbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:enabled="false"
-        android:max="59" />
-
-    <SeekBar
-        android:id="@+id/seconds_seekbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:enabled="false"
-        android:max="59" />
 
 
 </LinearLayout>
