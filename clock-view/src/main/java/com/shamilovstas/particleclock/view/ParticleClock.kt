@@ -100,9 +100,7 @@ class ParticleClock @JvmOverloads constructor(
     // region Size calculations
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val width = resolveSize(MIN_SIZE, widthMeasureSpec)
-        val height = resolveSize(MIN_SIZE, heightMeasureSpec)
-        val size = width.coerceAtMost(height)
-        setMeasuredDimension(size, size)
+        setMeasuredDimension(width, width)
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
