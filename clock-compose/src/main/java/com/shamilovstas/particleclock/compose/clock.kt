@@ -1,5 +1,6 @@
 package com.shamilovstas.particleclock.compose
 
+import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -13,9 +14,11 @@ import androidx.compose.ui.graphics.drawscope.*
 import androidx.compose.ui.unit.dp
 import com.shamilovstas.particleclock.geometry.AnalogClockGeometry
 import com.shamilovstas.particleclock.model.time.Minute
+import java.time.LocalTime
 
 @Composable
-fun Clock(modifier: Modifier) {
+fun Clock(modifier: Modifier, time: LocalTime) {
+    Log.d("Clock", "Recomposed: $time")
     val analogClockGeometry = remember { AnalogClockGeometry() }
     Canvas(modifier = modifier.padding(4.dp)) {
         Indicators(analogClockGeometry)
@@ -28,6 +31,7 @@ fun Clock(modifier: Modifier) {
         SecondsCircle(radius = largeRadius)
         SecondsIndicator(angle = 90f, sweepAngle = 10f, radius = largeRadius)
     }
+
 }
 
 fun DrawScope.Indicators(analogClockGeometry: AnalogClockGeometry) {
