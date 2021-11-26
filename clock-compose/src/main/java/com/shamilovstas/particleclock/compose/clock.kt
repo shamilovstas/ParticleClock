@@ -19,8 +19,14 @@ fun Clock(modifier: Modifier) {
     val analogClockGeometry = remember { AnalogClockGeometry() }
     Canvas(modifier = modifier.padding(4.dp)) {
         Indicators(analogClockGeometry)
-        LargeSecondsIndicator()
-        SmallSecondsIndicator()
+
+        val smallRadius = 25.dp.toPx()
+        SecondsCircle(radius = smallRadius)
+        SecondsIndicator(angle = 90f, sweepAngle = 30f, radius = smallRadius)
+
+        val largeRadius = radius - 12.dp.toPx()
+        SecondsCircle(radius = largeRadius)
+        SecondsIndicator(angle = 90f, sweepAngle = 10f, radius = largeRadius)
     }
 }
 
@@ -31,28 +37,19 @@ fun DrawScope.Indicators(analogClockGeometry: AnalogClockGeometry) {
         val angle = minute.value * (360 / 60)
         val size = if (isHourIndicator) 4.dp else 2.5.dp
         val style = if (isHourIndicator) Fill else Stroke(0.25.dp.toPx())
-        rotate(degrees = angle.toFloat()) {
-            translate(left = radius) {
-                drawCircle(
-                    color = Color.Blue,
-                    radius = size.toPx(),
-                    style = style,
-                )
+        withTransform(
+            transformBlock = {
+                rotate(degrees = angle.toFloat())
+                translate(left = this@Indicators.radius)
             }
+        ) {
+            drawCircle(
+                color = Color.Blue,
+                radius = size.toPx(),
+                style = style,
+            )
         }
     }
-}
-
-fun DrawScope.SmallSecondsIndicator() {
-    val radius = 25.dp.toPx()
-    SecondsCircle(radius = radius)
-    SecondsIndicator(angle = 90f, sweepAngle = 30f, radius = radius)
-}
-
-fun DrawScope.LargeSecondsIndicator() {
-    val radius = radius - 12.dp.toPx()
-    SecondsCircle(radius = radius)
-    SecondsIndicator(angle = 90f, sweepAngle = 10f, radius = radius)
 }
 
 fun DrawScope.SecondsIndicator(
