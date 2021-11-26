@@ -17,7 +17,7 @@ class ComposeClockActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Clock(modifier = Modifier.size(200.dp))
+                Clock(modifier = Modifier.size(300.dp))
             }
         }
     }

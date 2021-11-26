@@ -1,41 +1,43 @@
 package com.shamilovstas.particleclock.compose
 
-import android.util.Log
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.Layout
-import androidx.compose.ui.layout.layout
+import androidx.compose.ui.graphics.drawscope.*
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import java.time.Clock
-
-fun Modifier.squareWidth() =
-    this.then(layout { measurable, constraints ->
-        val placeable = measurable.measure(constraints)
-        Log.d("CloseCompose", "Measured: ${placeable.width}x${placeable.height}")
-        layout(placeable.width, placeable.width) {
-            placeable.place(0, 0)
-        }
-    })
+import com.shamilovstas.particleclock.geometry.AnalogClockGeometry
+import com.shamilovstas.particleclock.model.time.Minute
 
 @Composable
 fun Clock(modifier: Modifier) {
-    Canvas(modifier = modifier) {
-        val width = size.width
-        val height = size.height
-        drawRect(
-            Color.Blue,
-        )
+    val analogClockGeometry = remember { AnalogClockGeometry() }
+    Canvas(modifier = modifier.padding(4.dp)) {
+        Indicators(analogClockGeometry)
+    }
+}
+
+fun DrawScope.Indicators(analogClockGeometry: AnalogClockGeometry) {
+    repeat(60) {
+        val minute = Minute(it)
+        val isHourIndicator = analogClockGeometry.isSectorStart(minute)
+        val angle = minute.value * (360 / 60)
+        val size = if (isHourIndicator) 4.dp else 2.5.dp
+        val style = if (isHourIndicator) Fill else Stroke(0.25.dp.toPx())
+        rotate(degrees = angle.toFloat()) {
+            val radius = this.size.width / 2f
+            translate(left = radius) {
+                drawCircle(
+                    color = Color.Blue,
+                    radius = size.toPx(),
+                    style = style,
+                )
+            }
+        }
     }
 }
 
