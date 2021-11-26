@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.*
 import androidx.compose.ui.tooling.preview.Preview
@@ -18,6 +19,8 @@ fun Clock(modifier: Modifier) {
     val analogClockGeometry = remember { AnalogClockGeometry() }
     Canvas(modifier = modifier.padding(4.dp)) {
         Indicators(analogClockGeometry)
+        LargeSecondsCircle()
+        SmallSecondsCircle()
     }
 }
 
@@ -29,7 +32,6 @@ fun DrawScope.Indicators(analogClockGeometry: AnalogClockGeometry) {
         val size = if (isHourIndicator) 4.dp else 2.5.dp
         val style = if (isHourIndicator) Fill else Stroke(0.25.dp.toPx())
         rotate(degrees = angle.toFloat()) {
-            val radius = this.size.width / 2f
             translate(left = radius) {
                 drawCircle(
                     color = Color.Blue,
@@ -41,8 +43,20 @@ fun DrawScope.Indicators(analogClockGeometry: AnalogClockGeometry) {
     }
 }
 
-@Preview()
-@Composable
-fun ClockPreview() {
-    Clock(modifier = Modifier.fillMaxSize())
+fun DrawScope.SmallSecondsCircle() {
+    SecondsCircle(radius = radius - 12.dp.toPx())
 }
+
+fun DrawScope.LargeSecondsCircle() {
+    SecondsCircle(radius = 25.dp.toPx())
+}
+
+fun DrawScope.SecondsCircle(color: Color = Color.Blue, radius: Float) {
+    drawCircle(
+        color = color,
+        radius = radius,
+        style = Stroke(0.25.dp.toPx())
+    )
+}
+
+val DrawScope.radius: Float get() = this.size.width / 2f
