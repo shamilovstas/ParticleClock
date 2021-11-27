@@ -28,10 +28,10 @@ class ComposeClockActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val flow = flow<LocalTime> {
             while (currentCoroutineContext().isActive) {
-                delay(1000)
                 val newTime = currentTime.plusSeconds(1)
                 emit(newTime)
                 currentTime = newTime
+                delay(1000)
             }
         }.onEach {
             Log.d("Clock", "Flow: $it")

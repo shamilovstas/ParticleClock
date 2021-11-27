@@ -1,10 +1,12 @@
 package com.shamilovstas.particleclock.compose
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
+import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.padding
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -14,24 +16,72 @@ import androidx.compose.ui.graphics.drawscope.*
 import androidx.compose.ui.unit.dp
 import com.shamilovstas.particleclock.geometry.AnalogClockGeometry
 import com.shamilovstas.particleclock.model.time.Minute
+import com.shamilovstas.particleclock.model.time.Second
 import java.time.LocalTime
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun Clock(modifier: Modifier, time: LocalTime) {
+fun Clock(modifier: Modifier, time: LocalTime = LocalTime.now()) {
     Log.d("Clock", "Recomposed: $time")
+    val second = Second(time.second)
     val analogClockGeometry = remember { AnalogClockGeometry() }
+    val secondAngleAnimatable =
+        remember { Animatable(analogClockGeometry.secondsToAngle(second = second).angle) }
     Canvas(modifier = modifier.padding(4.dp)) {
         Indicators(analogClockGeometry)
 
         val smallRadius = 25.dp.toPx()
         SecondsCircle(radius = smallRadius)
-        SecondsIndicator(angle = 90f, sweepAngle = 30f, radius = smallRadius)
 
         val largeRadius = radius - 12.dp.toPx()
         SecondsCircle(radius = largeRadius)
-        SecondsIndicator(angle = 90f, sweepAngle = 10f, radius = largeRadius)
     }
 
+    RunSecondTrackAnimation(
+        key = second,
+        oldAngle = secondAngleAnimatable.value,
+        newAngle = analogClockGeometry.secondsToAngle(second).angle,
+        animateCallback = { secondAngleAnimatable.animateTo(it)},
+        snapCallback = { secondAngleAnimatable.snapTo(it) }
+    )
+
+    Canvas(modifier = modifier.padding(4.dp)) {
+        val largeRadius = radius - 12.dp.toPx()
+        val smallRadius = 25.dp.toPx()
+        SecondsIndicator(
+            angle = secondAngleAnimatable.value,
+            sweepAngle = 10f,
+            radius = largeRadius
+        )
+        SecondsIndicator(
+            angle = secondAngleAnimatable.value,
+            sweepAngle = 30f,
+            radius = smallRadius
+        )
+    }
+}
+
+@Composable
+fun RunSecondTrackAnimation(
+    key: Second,
+    newAngle: Float,
+    oldAngle: Float,
+    animateCallback: suspend (Float) -> Unit,
+    snapCallback: suspend (Float) -> Unit
+) {
+    LaunchedEffect(key1 = key) {
+        var isNewLap = false
+        var targetAngle = newAngle
+
+        if (targetAngle - oldAngle < 0f) {
+            isNewLap = true
+            targetAngle += 360f
+        }
+        animateCallback(targetAngle)
+        if (isNewLap) {
+            snapCallback(targetAngle - 360f)
+        }
+    }
 }
 
 fun DrawScope.Indicators(analogClockGeometry: AnalogClockGeometry) {
