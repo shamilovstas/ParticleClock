@@ -1,4 +1,4 @@
-package com.shamilovstas.particleclock.view
+package com.shamilovstas.particleclock.util
 
 import kotlin.random.Random
 

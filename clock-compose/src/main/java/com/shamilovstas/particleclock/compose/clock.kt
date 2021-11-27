@@ -15,19 +15,26 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.*
 import androidx.compose.ui.unit.dp
 import com.shamilovstas.particleclock.geometry.AnalogClockGeometry
+import com.shamilovstas.particleclock.model.angle.Angle
+import com.shamilovstas.particleclock.model.point.PolarPoint
+import com.shamilovstas.particleclock.model.point.Radius
 import com.shamilovstas.particleclock.model.time.Minute
 import com.shamilovstas.particleclock.model.time.Second
+import com.shamilovstas.particleclock.util.nextFloat
 import java.time.LocalTime
+import kotlin.random.Random
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Clock(modifier: Modifier, time: LocalTime = LocalTime.now()) {
-    Log.d("Clock", "Recomposed: $time")
+    Log.d("ClockCompose", "Recomposed: $time")
     val second = Second(time.second)
     val analogClockGeometry = remember { AnalogClockGeometry() }
     val secondAngleAnimatable =
         remember { Animatable(analogClockGeometry.secondsToAngle(second = second).angle) }
     Canvas(modifier = modifier.padding(4.dp)) {
+        Log.d("ClockCompose", "Canvas")
+
         Indicators(analogClockGeometry)
 
         val smallRadius = 25.dp.toPx()
@@ -53,9 +60,19 @@ fun Clock(modifier: Modifier, time: LocalTime = LocalTime.now()) {
         key = second,
         oldAngle = secondAngleAnimatable.value,
         newAngle = analogClockGeometry.secondsToAngle(second).angle,
-        animateCallback = { secondAngleAnimatable.animateTo(it)},
+        animateCallback = { secondAngleAnimatable.animateTo(it) },
         snapCallback = { secondAngleAnimatable.snapTo(it) }
     )
+}
+
+fun generateRandomParticles(
+    count: Int = 1000,
+    minRadius: Float,
+    maxRadius: Float
+): List<PolarPoint> = List(count) {
+    val randomAngle = Random.nextInt(0, 360).toFloat()
+    val radius = Random.nextFloat(minRadius, maxRadius)
+    PolarPoint(Radius(radius), Angle(randomAngle))
 }
 
 @Composable
@@ -78,6 +95,24 @@ fun RunSecondTrackAnimation(
         if (isNewLap) {
             snapCallback(targetAngle - 360f)
         }
+    }
+}
+
+@Composable
+fun Particle(
+    modifier: Modifier = Modifier,
+    color: Color = Color.Blue,
+    center: Offset,
+    style: DrawStyle,
+    radius: Float
+) {
+    Canvas(modifier = modifier) {
+        drawCircle(
+            color = color,
+            style = style,
+            radius = radius,
+            center = center
+        )
     }
 }
 
@@ -132,3 +167,5 @@ fun DrawScope.SecondsCircle(color: Color = Color.Blue, radius: Float) {
 }
 
 val DrawScope.radius: Float get() = this.size.width / 2f
+
+data class Particle(var x: Float, var y: Float)

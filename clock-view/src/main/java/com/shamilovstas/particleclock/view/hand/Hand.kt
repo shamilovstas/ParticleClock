@@ -8,6 +8,8 @@ import com.shamilovstas.particleclock.model.angle.Sector
 import com.shamilovstas.particleclock.model.point.CartesianPoint
 import com.shamilovstas.particleclock.model.point.PolarPoint
 import com.shamilovstas.particleclock.model.point.Radius
+import com.shamilovstas.particleclock.util.getFraction
+import com.shamilovstas.particleclock.util.nextFloat
 import com.shamilovstas.particleclock.view.*
 import kotlin.math.roundToInt
 import kotlin.math.sin

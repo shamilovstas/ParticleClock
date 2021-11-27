@@ -9,6 +9,8 @@ import android.view.animation.LinearInterpolator
 import com.shamilovstas.particleclock.model.angle.Angle
 import com.shamilovstas.particleclock.model.point.PolarPoint
 import com.shamilovstas.particleclock.model.point.Radius
+import com.shamilovstas.particleclock.util.getFraction
+import com.shamilovstas.particleclock.util.nextFloat
 import com.shamilovstas.particleclock.view.*
 import kotlin.math.abs
 import kotlin.math.sin
