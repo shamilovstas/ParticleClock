@@ -3,7 +3,7 @@ package com.shamilovstas.particleclock.compose
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.*
@@ -28,14 +28,17 @@ import kotlin.random.Random
 @Composable
 fun Clock(modifier: Modifier, time: LocalTime = LocalTime.now()) {
     Log.d("ClockCompose", "Recomposed: $time")
+    val paddingModifier = modifier.padding(4.dp)
     val second = Second(time.second)
     val analogClockGeometry = remember { AnalogClockGeometry() }
     val secondAngleAnimatable =
         remember { Animatable(analogClockGeometry.secondsToAngle(second = second).angle) }
-    Canvas(modifier = modifier.padding(4.dp)) {
+
+    val particles = remember { mutableStateListOf(*generateRandomParticles().toTypedArray()) }
+    Canvas(modifier = paddingModifier) {
         Log.d("ClockCompose", "Canvas")
 
-        Indicators(analogClockGeometry)
+        Indicators(analogClockGeometry::isSectorStart)
 
         val smallRadius = 25.dp.toPx()
         val largeRadius = radius - 12.dp.toPx()
@@ -56,6 +59,24 @@ fun Clock(modifier: Modifier, time: LocalTime = LocalTime.now()) {
         )
     }
 
+    val infiniteTransition = rememberInfiniteTransition()
+    val percent by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 0.001f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1000, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        )
+    )
+
+    for (particle in particles) {
+        val distancePercent = particle.distancePercent + percent.toDouble()
+        particle.distancePercent = distancePercent % 1.0
+        Particle(modifier = paddingModifier, particle = particle)
+    }
+
+
+
     RunSecondTrackAnimation(
         key = second,
         oldAngle = secondAngleAnimatable.value,
@@ -66,13 +87,14 @@ fun Clock(modifier: Modifier, time: LocalTime = LocalTime.now()) {
 }
 
 fun generateRandomParticles(
-    count: Int = 1000,
-    minRadius: Float,
-    maxRadius: Float
-): List<PolarPoint> = List(count) {
+    count: Int = 1000
+): List<ParticleState> = List(count) {
     val randomAngle = Random.nextInt(0, 360).toFloat()
-    val radius = Random.nextFloat(minRadius, maxRadius)
-    PolarPoint(Radius(radius), Angle(randomAngle))
+    val distance = Random.nextDouble()
+    val drawStyle = Random.nextBoolean().let {
+        if (it) Fill else Stroke(2f)
+    }
+    ParticleState(randomAngle, distance, drawStyle)
 }
 
 @Composable
@@ -101,25 +123,29 @@ fun RunSecondTrackAnimation(
 @Composable
 fun Particle(
     modifier: Modifier = Modifier,
-    color: Color = Color.Blue,
-    center: Offset,
-    style: DrawStyle,
-    radius: Float
+    particle: ParticleState,
 ) {
     Canvas(modifier = modifier) {
-        drawCircle(
-            color = color,
-            style = style,
-            radius = radius,
-            center = center
-        )
+        val max = radius - 12.dp.toPx() - 2.dp.toPx()
+        val min = 25.dp.toPx()
+        val radius = min + particle.distancePercent * (max - min)
+        withTransform(transformBlock = {
+            rotate(particle.angle)
+            translate(left = radius.toFloat())
+        }) {
+            drawCircle(
+                color = particle.color,
+                style = particle.drawStyle,
+                radius = 2.dp.toPx()
+            )
+        }
     }
 }
 
-fun DrawScope.Indicators(analogClockGeometry: AnalogClockGeometry) {
+fun DrawScope.Indicators(isSectorStart: (Minute) -> Boolean) {
     repeat(60) {
         val minute = Minute(it)
-        val isHourIndicator = analogClockGeometry.isSectorStart(minute)
+        val isHourIndicator = isSectorStart(minute)
         val angle = minute.value * (360 / 60)
         val size = if (isHourIndicator) 4.dp else 2.5.dp
         val style = if (isHourIndicator) Fill else Stroke(0.25.dp.toPx())
@@ -168,4 +194,9 @@ fun DrawScope.SecondsCircle(color: Color = Color.Blue, radius: Float) {
 
 val DrawScope.radius: Float get() = this.size.width / 2f
 
-data class Particle(var x: Float, var y: Float)
+data class ParticleState(
+    var angle: Float,
+    var distancePercent: Double,
+    val drawStyle: DrawStyle,
+    val color: Color = Color.Blue
+)
