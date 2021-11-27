@@ -31,23 +31,12 @@ fun Clock(modifier: Modifier, time: LocalTime = LocalTime.now()) {
         Indicators(analogClockGeometry)
 
         val smallRadius = 25.dp.toPx()
+        val largeRadius = radius - 12.dp.toPx()
+
         SecondsCircle(radius = smallRadius)
 
-        val largeRadius = radius - 12.dp.toPx()
         SecondsCircle(radius = largeRadius)
-    }
 
-    RunSecondTrackAnimation(
-        key = second,
-        oldAngle = secondAngleAnimatable.value,
-        newAngle = analogClockGeometry.secondsToAngle(second).angle,
-        animateCallback = { secondAngleAnimatable.animateTo(it)},
-        snapCallback = { secondAngleAnimatable.snapTo(it) }
-    )
-
-    Canvas(modifier = modifier.padding(4.dp)) {
-        val largeRadius = radius - 12.dp.toPx()
-        val smallRadius = 25.dp.toPx()
         SecondsIndicator(
             angle = secondAngleAnimatable.value,
             sweepAngle = 10f,
@@ -59,6 +48,14 @@ fun Clock(modifier: Modifier, time: LocalTime = LocalTime.now()) {
             radius = smallRadius
         )
     }
+
+    RunSecondTrackAnimation(
+        key = second,
+        oldAngle = secondAngleAnimatable.value,
+        newAngle = analogClockGeometry.secondsToAngle(second).angle,
+        animateCallback = { secondAngleAnimatable.animateTo(it)},
+        snapCallback = { secondAngleAnimatable.snapTo(it) }
+    )
 }
 
 @Composable
